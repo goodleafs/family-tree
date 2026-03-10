@@ -8,6 +8,7 @@
 - ✅ **成员管理**：添加家族成员，记录详细信息（生卒日期、职业、教育等）
 - ✅ **亲属关系**：建立父子、配偶等亲属关系
 - ✅ **家谱树可视化**：使用 D3.js 展示家谱树，支持交互操作
+- ✅ **灵堂祭拜**：可以给已经逝世的族人设置灵堂，并进行祭拜活动
 - ✅ **用户认证**：JWT 认证系统，支持注册登录
 - ✅ **权限管理**：管理员/编辑者/成员三级权限
 - 📦 **PDF 导出**：生成专业家谱图（开发中）
@@ -39,8 +40,8 @@
 ### 1. 克隆项目
 
 ```bash
-git clone <repository-url>
-cd genealogy-system
+git clone https://github.com/goodleafs/family-tree.git
+cd family-tree
 ```
 
 ### 2. 启动后端
@@ -89,7 +90,7 @@ npm run dev
 打开浏览器访问 http://localhost:5173
 
 默认登录：
-- 需要先注册账号
+- 超级管理员用户名：yunxing   密码：admin123
 
 ## 项目结构
 

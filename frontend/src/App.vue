@@ -93,8 +93,8 @@ onMounted(() => {
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>个人设置</el-dropdown-item>
-                  <el-dropdown-item v-if="userStore.isSuperuser" @click="$router.push('/admin')">系统管理</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/profile')">个人设置</el-dropdown-item>
+                  <el-dropdown-item v-if="userStore.isSuperuser" @click="$router.push('/users')">系统管理</el-dropdown-item>
                   <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </template>

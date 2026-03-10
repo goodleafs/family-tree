@@ -17,5 +17,16 @@ export const adminApi = {
   getUser: async (userId: number): Promise<User> => {
     const response = await request.get(`/admin/users/${userId}`)
     return response
+  },
+
+  updateUser: async (userId: number, data: Partial<User>): Promise<User> => {
+    const response = await request.put(`/admin/users/${userId}`, data)
+    return response
+  },
+
+  resetUserPassword: async (userId: number, newPassword: string): Promise<void> => {
+    await request.post(`/admin/users/${userId}/reset-password`, {
+      new_password: newPassword
+    })
   }
 }

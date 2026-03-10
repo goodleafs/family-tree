@@ -1,18 +1,35 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { authApi } from '@/api/auth'
+import { adminApi } from '@/api/admin'
+import type { User } from '@/types'
 import { ElMessage } from 'element-plus'
 
+const route = useRoute()
 const userStore = useUserStore()
 
 const editMode = ref(false)
 const loading = ref(false)
 const passwordLoading = ref(false)
+const userLoading = ref(false)
+
+// 判断是否是查看其他用户（管理员查看）
+const targetUserId = computed(() => {
+  const id = route.query.id
+  return id ? parseInt(id as string) : null
+})
+
+// 是否是查看自己的资料
+const isOwnProfile = computed(() => !targetUserId.value || targetUserId.value === userStore.user?.id)
+
+// 目标用户信息（可能是自己或其他用户）
+const targetUser = ref<User | null>(null)
 
 const editForm = ref({
-  email: userStore.user?.email || '',
-  phone: userStore.user?.phone || ''
+  email: '',
+  phone: ''
 })
 
 const passwordForm = ref({
@@ -21,14 +38,46 @@ const passwordForm = ref({
   confirmPassword: ''
 })
 
-const showPasswordDialog = ref(false)
+const resetPasswordForm = ref({
+  newPassword: '',
+  confirmPassword: ''
+})
 
-const userInfo = computed(() => userStore.user)
+const showPasswordDialog = ref(false)
+const showResetPasswordDialog = ref(false)
+const resetPasswordLoading = ref(false)
+
+// 显示的用户信息
+const userInfo = computed(() => {
+  if (isOwnProfile.value) {
+    return userStore.user
+  }
+  return targetUser.value
+})
+
+// 加载目标用户信息
+const loadTargetUser = async () => {
+  if (!targetUserId.value || isOwnProfile.value) {
+    targetUser.value = null
+    return
+  }
+  
+  userLoading.value = true
+  try {
+    const user = await adminApi.getUser(targetUserId.value)
+    targetUser.value = user
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('获取用户信息失败')
+  } finally {
+    userLoading.value = false
+  }
+}
 
 const startEdit = () => {
   editForm.value = {
-    email: userStore.user?.email || '',
-    phone: userStore.user?.phone || ''
+    email: userInfo.value?.email || '',
+    phone: userInfo.value?.phone || ''
   }
   editMode.value = true
 }
@@ -40,11 +89,21 @@ const cancelEdit = () => {
 const saveEdit = async () => {
   loading.value = true
   try {
-    await authApi.updateUser({
-      email: editForm.value.email || undefined,
-      phone: editForm.value.phone || undefined
-    })
-    await userStore.fetchUser()
+    // 如果是编辑其他用户（管理员权限）
+    if (targetUserId.value && !isOwnProfile.value) {
+      await adminApi.updateUser(targetUserId.value, {
+        email: editForm.value.email || undefined,
+        phone: editForm.value.phone || undefined
+      })
+      await loadTargetUser()
+    } else {
+      // 编辑自己
+      await authApi.updateUser({
+        email: editForm.value.email || undefined,
+        phone: editForm.value.phone || undefined
+      })
+      await userStore.fetchUser()
+    }
     editMode.value = false
     ElMessage.success('信息更新成功')
   } catch (error) {
@@ -91,15 +150,63 @@ const changePassword = async () => {
     passwordLoading.value = false
   }
 }
+
+const resetPassword = async () => {
+  if (!resetPasswordForm.value.newPassword) {
+    ElMessage.warning('请输入新密码')
+    return
+  }
+  
+  if (resetPasswordForm.value.newPassword !== resetPasswordForm.value.confirmPassword) {
+    ElMessage.warning('两次输入的密码不一致')
+    return
+  }
+  
+  if (resetPasswordForm.value.newPassword.length < 6) {
+    ElMessage.warning('密码长度至少6位')
+    return
+  }
+  
+  if (!targetUserId.value) {
+    ElMessage.error('未选择目标用户')
+    return
+  }
+  
+  resetPasswordLoading.value = true
+  try {
+    await adminApi.resetUserPassword(targetUserId.value, resetPasswordForm.value.newPassword)
+    ElMessage.success('密码重置成功')
+    showResetPasswordDialog.value = false
+    resetPasswordForm.value = {
+      newPassword: '',
+      confirmPassword: ''
+    }
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('密码重置失败')
+  } finally {
+    resetPasswordLoading.value = false
+  }
+}
+
+// 监听路由参数变化
+watch(() => route.query.id, () => {
+  loadTargetUser()
+  editMode.value = false
+})
+
+onMounted(() => {
+  loadTargetUser()
+})
 </script>
 
 <template>
   <div class="profile-page">
     <div class="page-header">
-      <h2>个人中心</h2>
+      <h2>{{ isOwnProfile ? '个人中心' : '用户详情' }}</h2>
     </div>
     
-    <el-row :gutter="20">
+    <el-row :gutter="20" v-loading="userLoading">
       <el-col :span="8">
         <el-card>
           <div class="user-card">
@@ -122,8 +229,8 @@ const changePassword = async () => {
             <div class="card-header">
               <span>基本信息</span>
               <div>
-                <el-button v-if="!editMode" type="primary" @click="startEdit">编辑</el-button>
-                <template v-else>
+                <el-button v-if="!editMode && (isOwnProfile || userStore.isSuperuser)" type="primary" @click="startEdit">编辑</el-button>
+                <template v-else-if="editMode">
                   <el-button @click="cancelEdit">取消</el-button>
                   <el-button type="primary" :loading="loading" @click="saveEdit">保存</el-button>
                 </template>
@@ -160,8 +267,11 @@ const changePassword = async () => {
           </el-descriptions>
           
           <div class="actions">
-            <el-button type="primary" @click="showPasswordDialog = true">
+            <el-button v-if="isOwnProfile" type="primary" @click="showPasswordDialog = true">
               修改密码
+            </el-button>
+            <el-button v-else-if="userStore.isSuperuser" type="warning" @click="showResetPasswordDialog = true">
+              重置密码
             </el-button>
           </div>
         </el-card>
@@ -201,6 +311,39 @@ const changePassword = async () => {
       <template #footer>
         <el-button @click="showPasswordDialog = false">取消</el-button>
         <el-button type="primary" :loading="passwordLoading" @click="changePassword">确定</el-button>
+      </template>
+    </el-dialog>
+    
+    <el-dialog v-model="showResetPasswordDialog" title="重置用户密码" width="400px">
+      <el-alert
+        :title="`正在为 ${userInfo?.username} 重置密码`"
+        type="warning"
+        :closable="false"
+        style="margin-bottom: 20px"
+      />
+      <el-form :model="resetPasswordForm" label-width="100px">
+        <el-form-item label="新密码">
+          <el-input
+            v-model="resetPasswordForm.newPassword"
+            type="password"
+            placeholder="请输入新密码（至少6位）"
+            show-password
+          />
+        </el-form-item>
+        
+        <el-form-item label="确认密码">
+          <el-input
+            v-model="resetPasswordForm.confirmPassword"
+            type="password"
+            placeholder="请再次输入新密码"
+            show-password
+          />
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <el-button @click="showResetPasswordDialog = false">取消</el-button>
+        <el-button type="primary" :loading="resetPasswordLoading" @click="resetPassword">确定</el-button>
       </template>
     </el-dialog>
   </div>

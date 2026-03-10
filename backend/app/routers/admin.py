@@ -87,3 +87,50 @@ async def get_user(
     if not user:
         raise HTTPException(status_code=404, detail="用户不存在")
     return UserResponse.model_validate(user)
+
+@router.put("/users/{user_id}", response_model=UserResponse)
+async def update_user(
+    user_id: int,
+    user_update: dict,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_superuser)
+):
+    """更新用户信息（仅超级管理员）"""
+    user = await FamilyService.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    
+    # 允许更新的字段
+    allowed_fields = ['email', 'phone']
+    for field in allowed_fields:
+        if field in user_update:
+            setattr(user, field, user_update[field])
+    
+    await db.commit()
+    await db.refresh(user)
+    
+    return UserResponse.model_validate(user)
+
+@router.post("/users/{user_id}/reset-password")
+async def reset_user_password(
+    user_id: int,
+    data: dict,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_superuser)
+):
+    """重置用户密码（仅超级管理员）"""
+    from app.utils.auth import get_password_hash
+    
+    user = await FamilyService.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    
+    new_password = data.get('new_password')
+    if not new_password or len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="密码长度至少6位")
+    
+    # 重置密码
+    user.hashed_password = get_password_hash(new_password)
+    await db.commit()
+    
+    return {"message": "密码重置成功"}

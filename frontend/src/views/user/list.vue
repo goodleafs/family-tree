@@ -128,17 +128,23 @@ onMounted(() => {
             {{ new Date(row.created_at).toLocaleString('zh-CN') }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button
+              type="primary"
+              size="small"
+              @click="$router.push(`/profile?id=${row.id}`)"
+            >
+              详情
+            </el-button>
+            <el-button
               v-if="row.id !== userStore.user?.id"
-              :type="row.is_superuser ? 'danger' : 'primary'"
+              :type="row.is_superuser ? 'danger' : 'warning'"
               size="small"
               @click="toggleSuperuser(row)"
             >
               {{ row.is_superuser ? '取消超管' : '设为超管' }}
             </el-button>
-            <span v-else class="text-gray">当前用户</span>
           </template>
         </el-table-column>
       </el-table>

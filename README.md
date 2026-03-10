@@ -218,14 +218,29 @@ export default defineConfig({
 
 我们欢迎所有形式的贡献，无论是新功能、bug 修复还是文档改进。
 
+## 系统截图
+
+![](/mdimage/ScreenShot_2026-03-10_172515_436.png)
+
+![ScreenShot_2026-03-10_172543_603](/mdimage/ScreenShot_2026-03-10_172543_603.png)
+
+![ScreenShot_2026-03-10_172553_603](/mdimage/ScreenShot_2026-03-10_172553_603.png)
+
+![ScreenShot_2026-03-10_172603_428](/mdimage/ScreenShot_2026-03-10_172603_428.png)
+
+![ScreenShot_2026-03-10_172614_627](/mdimage/ScreenShot_2026-03-10_172614_627.png)
+
+![ScreenShot_2026-03-10_172622_315](/mdimage/ScreenShot_2026-03-10_172622_315.png)
+
 ### 开发流程
 
 1. **Fork 项目**
+   
    ```bash
    git clone https://github.com/goodleafs/family-tree.git
    cd family-tree
    ```
-
+   
 2. **创建分支**
    ```bash
    git checkout -b feature/your-feature-name

@@ -403,6 +403,29 @@ const handleAddPerson = async () => {
   }
 }
 
+const deletePerson = async (person: Person) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除成员"${person.name}"吗？此操作不可撤销。`,
+      '确认删除',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    
+    await personApi.deletePerson(person.id)
+    ElMessage.success('删除成员成功')
+    fetchPersons()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error(error)
+      ElMessage.error('删除失败')
+    }
+  }
+}
+
 const viewPersonTree = (personId: number) => {
   if (!personId || isNaN(personId)) {
     ElMessage.warning('无效的成员ID')
@@ -549,10 +572,13 @@ watch(activeTab, (newTab) => {
             
             <el-table-column prop="occupation" label="职业" />
             
-            <el-table-column label="操作" width="180">
+            <el-table-column label="操作" width="200">
               <template #default="{ row }">
                 <el-button type="primary" link @click="viewPersonTree(row.id)">
                   查看详情
+                </el-button>
+                <el-button type="danger" link @click="deletePerson(row)">
+                  删除
                 </el-button>
               </template>
             </el-table-column>
@@ -612,7 +638,7 @@ watch(activeTab, (newTab) => {
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>家族成员角色管理</span>
+              <span>家谱角色管理</span>
               <el-button 
                 v-if="canManageRoles" 
                 type="primary" 

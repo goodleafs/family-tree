@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { memorialApi, type MemorialHall, type WorshipRecord } from '@/api/memorial'
 import { ElMessage } from 'element-plus'
+import { toLunarYearWithDate } from '@/utils/lunar'
 
 const route = useRoute()
 const router = useRouter()
@@ -130,6 +131,9 @@ onMounted(() => {
                 <h2 class="tablet-name">{{ hall.person.name }}</h2>
                 <p class="tablet-dates" v-if="hall.person.birth_date || hall.person.death_date">
                   {{ hall.person.birth_date || '?' }} ~ {{ hall.person.death_date || '?' }}
+                </p>
+                <p class="tablet-lunar-dates" v-if="hall.person.birth_date || hall.person.death_date">
+                  农历: {{ hall.person.birth_date ? toLunarYearWithDate(hall.person.birth_date) : '?' }} ~ {{ hall.person.death_date ? toLunarYearWithDate(hall.person.death_date) : '?' }}
                 </p>
                 <p class="tablet-honor">英灵永存</p>
               </div>
@@ -335,6 +339,12 @@ onMounted(() => {
   margin: 0 0 10px 0;
   font-size: 14px;
   color: #666;
+}
+
+.tablet-lunar-dates {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #999;
 }
 
 .tablet-honor {

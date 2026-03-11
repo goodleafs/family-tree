@@ -5,6 +5,18 @@ import { personApi } from '@/api/person'
 import { familyApi } from '@/api/family'
 import type { Person, Family, Relationship, RelationshipCreate } from '@/types'
 import { ElMessage, ElMessageBox, ElButtonGroup } from 'element-plus'
+import { Download } from '@element-plus/icons-vue'
+import { toLunarYearWithDate } from '@/utils/lunar'
+import html2pdf from 'html2pdf.js'
+
+// HTML2PDF选项类型
+type Html2PdfOptions = {
+  margin: number[];
+  filename: string;
+  image: { type: string; quality: number };
+  html2canvas: { scale: number; useCORS: boolean; logging: boolean };
+  jsPDF: { unit: string; format: string; orientation: string };
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +41,9 @@ const relForm = ref<RelationshipCreate>({
   relation_type: 'father',
   is_primary: true
 })
+
+// PDF导出区域引用
+const pdfContentRef = ref<HTMLElement | null>(null)
 
 // 计算属性：获取带时间戳的照片URL（防止缓存）
 const personPhotoUrl = computed(() => {
@@ -132,6 +147,43 @@ const deletePerson = async () => {
       console.error('删除失败:', error)
       ElMessage.error('删除失败')
     }
+  }
+}
+
+// PDF导出功能
+const exportToPDF = async () => {
+  if (!person.value || !pdfContentRef.value) return
+  
+  // 临时显示PDF内容区域
+  const originalDisplay = pdfContentRef.value.style.display
+  pdfContentRef.value.style.display = 'block'
+  
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: `${person.value.name}_家族成员信息.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 2,
+      useCORS: true,
+      logging: false
+    },
+    jsPDF: { 
+      unit: 'mm', 
+      format: 'a4', 
+      orientation: 'portrait' 
+    }
+  }
+  
+  try {
+    ElMessage.info('正在生成PDF，请稍候...')
+    await html2pdf().set(opt).from(pdfContentRef.value).save()
+    ElMessage.success('PDF导出成功')
+  } catch (error) {
+    console.error('PDF导出失败:', error)
+    ElMessage.error('PDF导出失败')
+  } finally {
+    // 恢复原始显示状态
+    pdfContentRef.value.style.display = originalDisplay
   }
 }
 
@@ -249,6 +301,10 @@ const deleteRelationship = async (relId: number) => {
       
       <template #extra>
         <el-button-group v-if="person">
+          <el-button v-if="!editMode" :disabled="loading" @click="exportToPDF" type="primary">
+            <el-icon><Download /></el-icon>
+            导出PDF
+          </el-button>
           <el-button v-if="!editMode" :disabled="loading" @click="startEdit">编辑</el-button>
           <el-button v-if="editMode" :disabled="loading" @click="saveEdit" type="success">保存</el-button>
           <el-button v-if="editMode" :disabled="loading" @click="cancelEdit">取消</el-button>
@@ -257,7 +313,7 @@ const deleteRelationship = async (relId: number) => {
       </template>
     </el-page-header>
 
-    <div v-if="!loading && person">
+    <div v-if="!loading && person" class="person-detail-content">
       <el-tabs v-model="activeTab" style="margin-top: 20px;">
         <el-tab-pane label="基本信息" name="basic">
           <el-card>
@@ -286,7 +342,12 @@ const deleteRelationship = async (relId: number) => {
                       placeholder="选择日期"
                       value-format="YYYY-MM-DD"
                     />
-                    <span v-else>{{ formatDate(person.birth_date) }}</span>
+                    <div v-else>
+                      <div>{{ formatDate(person.birth_date) }}</div>
+                      <div v-if="person.birth_date" class="lunar-date">
+                        农历: {{ toLunarYearWithDate(person.birth_date) }}
+                      </div>
+                    </div>
                   </el-descriptions-item>
                   
                   <el-descriptions-item label="逝世纪念">
@@ -297,7 +358,12 @@ const deleteRelationship = async (relId: number) => {
                       placeholder="选择日期"
                       value-format="YYYY-MM-DD"
                     />
-                    <span v-else>{{ formatDate(person.death_date) }}</span>
+                    <div v-else>
+                      <div>{{ formatDate(person.death_date) }}</div>
+                      <div v-if="person.death_date" class="lunar-date">
+                        农历: {{ toLunarYearWithDate(person.death_date) }}
+                      </div>
+                    </div>
                   </el-descriptions-item>
                   
                   <el-descriptions-item label="所属家族" :span="2">
@@ -543,6 +609,145 @@ const deleteRelationship = async (relId: number) => {
           </el-card>
         </el-tab-pane>
       </el-tabs>
+      
+      <!-- PDF导出专用区域（隐藏，只包含只读内容） -->
+      <div ref="pdfContentRef" class="pdf-export-content" style="display: none;">
+        <div class="pdf-header">
+          <h1>{{ person.name }} - 家族成员详细信息</h1>
+          <div class="pdf-photo" v-if="person.photo_url">
+            <img :src="personPhotoUrl" style="width: 120px; height: 150px; object-fit: cover; border-radius: 4px;" />
+          </div>
+        </div>
+        
+        <!-- 基本信息 -->
+        <div class="pdf-section">
+          <h2>一、基本信息</h2>
+          <table class="pdf-table">
+            <tr>
+              <td class="label">姓名</td>
+              <td>{{ person.name }}</td>
+              <td class="label">性别</td>
+              <td>{{ person.gender === 'male' ? '男性' : person.gender === 'female' ? '女性' : '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">出生日期</td>
+              <td>
+                {{ formatDate(person.birth_date) }}
+                <span v-if="person.birth_date" class="pdf-lunar">（农历: {{ toLunarYearWithDate(person.birth_date) }}）</span>
+              </td>
+              <td class="label">逝世纪念</td>
+              <td>
+                {{ formatDate(person.death_date) }}
+                <span v-if="person.death_date" class="pdf-lunar">（农历: {{ toLunarYearWithDate(person.death_date) }}）</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">所属家族</td>
+              <td>{{ family?.name || '-' }}</td>
+              <td class="label">字辈号</td>
+              <td>{{ person.generation_number || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">分支名</td>
+              <td colspan="3">{{ person.branch_name || '-' }}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <!-- 出身详情 -->
+        <div class="pdf-section">
+          <h2>二、出身详情</h2>
+          <table class="pdf-table">
+            <tr>
+              <td class="label" style="width: 120px;">出生地</td>
+              <td>{{ person.birthplace || '未填写' }}</td>
+            </tr>
+            <tr>
+              <td class="label">现居住地</td>
+              <td>{{ person.residence || '未填写' }}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <!-- 教育职业 -->
+        <div class="pdf-section">
+          <h2>三、教育职业</h2>
+          <table class="pdf-table">
+            <tr>
+              <td class="label" style="width: 120px;">教育背景</td>
+              <td>{{ person.education || '未填写' }}</td>
+            </tr>
+            <tr>
+              <td class="label">职业</td>
+              <td>{{ person.occupation || '未填写' }}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <!-- 生平事迹 -->
+        <div class="pdf-section">
+          <h2>四、生平事迹</h2>
+          <div class="pdf-content-block">
+            <h4>生平简介</h4>
+            <p>{{ person.biography || '暂无生平介绍' }}</p>
+          </div>
+          <div class="pdf-content-block">
+            <h4>主要成就</h4>
+            <p>{{ person.achievements || '暂无主要成就' }}</p>
+          </div>
+        </div>
+        
+        <!-- 家族成员 -->
+        <div class="pdf-section">
+          <h2>五、同家族成员</h2>
+          <table class="pdf-table" v-if="familyMembers.length > 0">
+            <thead>
+              <tr>
+                <th style="width: 80px;">姓名</th>
+                <th style="width: 60px;">性别</th>
+                <th style="width: 80px;">字辈</th>
+                <th>出生日期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="member in familyMembers.slice(0, 20)" :key="member.id">
+                <td>{{ member.name }}</td>
+                <td>{{ member.gender === 'male' ? '男' : member.gender === 'female' ? '女' : '-' }}</td>
+                <td>第{{ member.generation_number }}代</td>
+                <td>{{ member.birth_date || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else class="pdf-empty">此家族暂无其他成员</p>
+        </div>
+        
+        <!-- 亲属关系 -->
+        <div class="pdf-section">
+          <h2>六、亲属关系</h2>
+          <table class="pdf-table" v-if="relationships.length > 0">
+            <thead>
+              <tr>
+                <th style="width: 80px;">关系类型</th>
+                <th style="width: 100px;">关联成员</th>
+                <th style="width: 80px;">主要配偶</th>
+                <th>结婚日期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="rel in relationships" :key="rel.id">
+                <td>{{ relationTypeMap[rel.relation_type] || rel.relation_type }}</td>
+                <td>{{ rel.relative_name || '-' }}</td>
+                <td>
+                  <span v-if="rel.relation_type === 'spouse'">{{ rel.is_primary ? '是' : '否' }}</span>
+                  <span v-else>-</span>
+                </td>
+                <td>{{ rel.marriage_date || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else class="pdf-empty">暂无亲属关系记录</p>
+        </div>
+      </div>
     </div>
     
     <el-dialog v-model="showRelDialog" title="添加亲属关系" width="500px">
@@ -721,5 +926,135 @@ const deleteRelationship = async (relId: number) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.lunar-date {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 4px;
+}
+
+/* PDF导出样式 */
+@media print {
+  .person-detail {
+    padding: 0;
+  }
+  
+  .el-page-header {
+    display: none;
+  }
+  
+  .el-tabs__header {
+    display: none;
+  }
+  
+  .el-tab-pane {
+    display: block !important;
+  }
+  
+  .el-card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
+}
+
+/* PDF导出容器样式 */
+.person-detail-content {
+  background: white;
+}
+
+/* PDF导出内容区域样式 */
+.pdf-export-content {
+  padding: 20px;
+  background: white;
+  font-family: 'SimSun', 'Songti SC', serif;
+}
+
+.pdf-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #333;
+}
+
+.pdf-header h1 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.pdf-photo {
+  margin-top: 10px;
+}
+
+.pdf-section {
+  margin-bottom: 25px;
+  page-break-inside: avoid;
+}
+
+.pdf-section h2 {
+  font-size: 16px;
+  color: #333;
+  border-left: 4px solid #409eff;
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
+
+.pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.pdf-table td,
+.pdf-table th {
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.pdf-table .label {
+  background-color: #f5f7fa;
+  font-weight: bold;
+  width: 100px;
+  color: #606266;
+}
+
+.pdf-table th {
+  background-color: #f5f7fa;
+  font-weight: bold;
+  color: #606266;
+}
+
+.pdf-lunar {
+  color: #909399;
+  font-size: 11px;
+}
+
+.pdf-content-block {
+  margin-bottom: 15px;
+}
+
+.pdf-content-block h4 {
+  font-size: 14px;
+  color: #606266;
+  margin-bottom: 8px;
+}
+
+.pdf-content-block p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-wrap;
+  padding: 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+}
+
+.pdf-empty {
+  color: #909399;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
 }
 </style>

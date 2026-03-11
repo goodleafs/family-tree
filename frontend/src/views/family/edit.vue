@@ -151,7 +151,7 @@ onMounted(() => {
             type="textarea"
             :rows="4"
             placeholder="请输入家族历史"
-            maxlength="1000"
+            maxlength="2000"
             show-word-limit
           />
         </el-form-item>
@@ -162,7 +162,7 @@ onMounted(() => {
             type="textarea"
             :rows="2"
             placeholder="请输入家训"
-            maxlength="200"
+            maxlength="2000"
             show-word-limit
           />
         </el-form-item>

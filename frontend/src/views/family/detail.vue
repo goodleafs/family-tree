@@ -30,7 +30,7 @@ const newPerson = ref<Partial<Person>>({
   biography: ''
 })
 
-// 家谱树相关
+// 族谱树相关
 const treeData = ref<FamilyTree | null>(null)
 const treeLoading = ref(false)
 const svgRef = ref<SVGSVGElement | null>(null)
@@ -247,7 +247,7 @@ const loadFamilyTree = async (personId?: number) => {
     renderTree()
   } catch (error) {
     console.error(error)
-    ElMessage.error('加载家谱树失败')
+    ElMessage.error('加载族谱树失败')
   } finally {
     treeLoading.value = false
   }
@@ -358,7 +358,7 @@ const fetchPersons = async () => {
   try {
     const res = await personApi.getFamilyPersons(familyId)
     persons.value = res.items
-    // 如果在tree选项卡且还没有加载家谱树，自动加载
+    // 如果在tree选项卡且还没有加载族谱树，自动加载
     if (activeTab.value === 'tree' && !treeData.value && persons.value.length > 0) {
       await loadFamilyTree()
     }
@@ -468,7 +468,7 @@ onMounted(() => {
   fetchFamilyMembers()
 })
 
-// 监听选项卡变化，切换到家谱树时自动加载
+// 监听选项卡变化，切换到族谱树时自动加载
 watch(activeTab, (newTab) => {
   if (newTab === 'tree' && !treeData.value && persons.value.length > 0) {
     loadFamilyTree()
@@ -586,12 +586,12 @@ watch(activeTab, (newTab) => {
         </el-card>
       </el-tab-pane>
       
-      <!-- 家谱树 -->
-      <el-tab-pane label="家谱树" name="tree">
+      <!-- 族谱树 -->
+      <el-tab-pane label="族谱树" name="tree">
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>家谱树可视化</span>
+              <span>族谱树可视化</span>
               <div class="header-actions">
                 <el-select
                   v-model="selectedTreePerson"
@@ -607,7 +607,7 @@ watch(activeTab, (newTab) => {
                   />
                 </el-select>
                 <el-button type="primary" @click="$router.push('/tree')">
-                  查看完整家谱树
+                  查看完整族谱树
                 </el-button>
               </div>
             </div>
@@ -634,11 +634,11 @@ watch(activeTab, (newTab) => {
       </el-tab-pane>
       
       <!-- 成员管理 -->
-      <el-tab-pane label="家谱权限管理" name="roles">
+      <el-tab-pane label="族谱权限管理" name="roles">
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>家谱角色管理</span>
+              <span>族谱角色管理</span>
               <el-button 
                 v-if="canManageRoles" 
                 type="primary" 
@@ -719,7 +719,7 @@ watch(activeTab, (newTab) => {
       </el-tab-pane>
     </el-tabs>
     
-    <!-- 添加家谱成员对话框 -->
+    <!-- 添加族谱成员对话框 -->
     <el-dialog v-model="addPersonDialog" title="添加成员" width="500px">
       <el-form :model="newPerson" label-position="top">
         <el-form-item label="姓名" required>

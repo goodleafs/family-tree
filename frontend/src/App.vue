@@ -34,7 +34,7 @@ onMounted(() => {
     <el-container v-else class="layout-container">
       <el-aside width="200px" class="sidebar">
         <div class="logo">
-          <h2>家谱系统V1.0</h2>
+          <h2>族谱系统V1.0</h2>
         </div>
         <el-menu
           :default-active="$route.path"
@@ -66,7 +66,7 @@ onMounted(() => {
           
           <el-menu-item index="/tree">
             <el-icon><Share /></el-icon>
-            <span>家谱树</span>
+            <span>族谱树</span>
           </el-menu-item>
           
           <el-menu-item index="/memorial">

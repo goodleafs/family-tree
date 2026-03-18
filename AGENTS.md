@@ -1,4 +1,4 @@
-# 寻根家谱管理系统 - AI Coding Guidelines
+# 寻根族谱管理系统 - AI Coding Guidelines
 
 ## Project Overview
 Full-stack family tree/genealogy management system with FastAPI backend and Vue 3 frontend.

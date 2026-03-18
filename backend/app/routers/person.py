@@ -208,7 +208,7 @@ async def get_person_tree(
     db: AsyncSession = Depends(get_db),
     current_user: Optional = Depends(get_current_active_user)
 ):
-    """获取成员家谱树"""
+    """获取成员族谱树"""
     person = await PersonService.get_person_by_id(db, person_id)
     if not person:
         raise HTTPException(status_code=404, detail="成员不存在")
@@ -224,7 +224,7 @@ async def get_person_tree(
     
     tree_data = await PersonService.build_family_tree(db, person_id, max_generations)
     if not tree_data:
-        raise HTTPException(status_code=404, detail="无法构建家谱树")
+        raise HTTPException(status_code=404, detail="无法构建族谱树")
     
     return tree_data
 

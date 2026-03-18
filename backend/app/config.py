@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class Settings(BaseSettings):
     # 应用配置
-    APP_NAME: str = "寻根家谱管理系统"
+    APP_NAME: str = "寻根族谱管理系统"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
     

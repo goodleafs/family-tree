@@ -1,6 +1,6 @@
-# 寻根家谱管理系统
+# 寻根族谱管理系统
 
-> 一个基于 FastAPI + Vue3 + SQLite 的多家族寻根家谱管理系统，支持家谱可视化、祭拜管理、PDF导出、打印预览和Excel批量导入等功能。
+> 一个基于 FastAPI + Vue3 + SQLite 的多家族寻根族谱管理系统，支持族谱可视化、祭拜管理、PDF导出、打印预览和Excel批量导入等功能。
 
 ## ✨ 功能特性
 
@@ -21,8 +21,8 @@
 - 家族关系建立（父子、配偶、子女关系）
 - 多配偶关系支持
 
-### 🌳 家谱可视化
-- 基于 D3.js 的交互式家谱树展示
+### 🌳 族谱可视化
+- 基于 D3.js 的交互式族谱树展示
 - 支持多代展开/收起
 - 点击节点查看成员详情
 - 响应式布局适配
@@ -35,7 +35,7 @@
 - 祭拜权限管理（家族成员专属）
 
 ### 📄 导入导出
-- **PDF 导出**: 使用 ReportLab 生成精美家谱 PDF
+- **PDF 导出**: 使用 ReportLab 生成精美族谱 PDF
 - **Excel 导入**: 批量导入成员信息
 - **打印预览**: 优化打印样式，支持 A4 纸张
 
@@ -128,9 +128,9 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 3. 上传成员照片
 4. 建立家族关系（选择父亲、配偶等）
 
-### 查看家谱树
+### 查看族谱树
 
-1. 在家族详情页点击"家谱树"标签
+1. 在家族详情页点击"族谱树"标签
 2. 点击节点可展开/收起子代
 3. 双击节点查看成员详细信息
 4. 使用鼠标滚轮缩放视图
@@ -145,7 +145,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 3. 上传 Excel 文件
 4. 系统自动解析并建立关系
 
-### 导出家谱 PDF
+### 导出族谱 PDF
 
 1. 选择要导出的成员作为根节点
 2. 点击"导出 PDF"按钮
@@ -289,7 +289,7 @@ export default defineConfig({
 ```
 MIT License
 
-Copyright (c) 2024 寻根家谱管理系统
+Copyright (c) 2024 寻根族谱管理系统
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

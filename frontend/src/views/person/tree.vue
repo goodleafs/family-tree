@@ -47,7 +47,7 @@ const onFamilyChange = async () => {
     const res = await personApi.getFamilyPersons(selectedFamily.value)
     persons.value = res.items
     
-    // 如果有成员，自动选择第一个并加载家谱树
+    // 如果有成员，自动选择第一个并加载族谱树
     if (persons.value.length > 0) {
       selectedPerson.value = persons.value[0].id
       await onPersonChange()
@@ -67,12 +67,12 @@ const onPersonChange = async () => {
   try {
     const res = await personApi.getFamilyTree(selectedPerson.value)
     treeData.value = res
-    ElMessage.success('家谱树加载成功')
+    ElMessage.success('族谱树加载成功')
     await nextTick()
     renderTree()
   } catch (error) {
     console.error(error)
-    ElMessage.error('加载家谱树失败')
+    ElMessage.error('加载族谱树失败')
   } finally {
     loading.value = false
   }
@@ -282,13 +282,13 @@ onMounted(() => {
 <template>
   <div class="tree-view">
     <div class="page-header">
-      <h2>家谱树</h2>
+      <h2>族谱树</h2>
     </div>
     
     <el-card>
       <template #header>
         <div class="card-header">
-          <span>家谱树可视化</span>
+          <span>族谱树可视化</span>
           <div class="header-actions">
             <el-select
               v-model="selectedFamily"
@@ -323,7 +323,7 @@ onMounted(() => {
       </template>
       
       <div v-if="!treeData" class="empty-state">
-        <el-empty description="暂无家谱数据，请先创建家族和成员">
+        <el-empty description="暂无族谱数据，请先创建家族和成员">
           <template #image>
             <el-icon :size="60" color="#909399"><Share /></el-icon>
           </template>

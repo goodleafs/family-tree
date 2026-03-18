@@ -41,7 +41,7 @@ const handleLogin = async () => {
     <el-card class="login-card" shadow="hover">
       <template #header>
         <div class="login-header">
-          <h2>寻根家谱管理系统</h2>
+          <h2>寻根族谱管理系统</h2>
           <p>欢迎登录</p>
         </div>
       </template>

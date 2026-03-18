@@ -65,7 +65,7 @@ const handleRegister = async () => {
     <el-card class="register-card" shadow="hover">
       <template #header>
         <div class="register-header">
-          <h2>寻根家谱管理系统</h2>
+          <h2>寻根族谱管理系统</h2>
           <p>用户注册</p>
         </div>
       </template>

@@ -31,15 +31,15 @@ onMounted(() => {
         <el-card class="welcome-card">
           <template #header>
             <div class="card-header">
-              <span>欢迎使用寻根家谱管理系统</span>
+              <span>欢迎使用寻根族谱管理系统</span>
             </div>
           </template>
-          <p>这是一个基于 FastAPI + Vue3 的多家族寻根家谱管理系统。您可以：</p>
+          <p>这是一个基于 FastAPI + Vue3 的多家族寻根族谱管理系统。您可以：</p>
           <ul>
             <li>创建和管理多个家族</li>
             <li>添加家族成员和亲属关系</li>
-            <li>可视化展示家谱树</li>
-            <li>导出 PDF 家谱图</li>
+            <li>可视化展示族谱树</li>
+            <li>导出 PDF 族谱图</li>
             <li>批量导入 Excel 数据</li>
           </ul>
         </el-card>

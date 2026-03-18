@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="基于FastAPI+Vue3的多家族寻根家谱管理系统",
+    description="基于FastAPI+Vue3的多家族寻根族谱管理系统",
     lifespan=lifespan
 )
 
@@ -51,7 +51,7 @@ app.include_router(memorial_router, prefix="/api/v1")
 async def root():
     """根路径"""
     return {
-        "message": "寻根家谱管理系统API",
+        "message": "寻根族谱管理系统API",
         "version": settings.APP_VERSION,
         "docs": "/docs"
     }

@@ -39,7 +39,7 @@ export const personApi = {
     })
   },
 
-  // 获取家谱树
+  // 获取族谱树
   getFamilyTree: (personId: number, maxGenerations?: number): Promise<FamilyTree> => {
     return request.get(`/persons/${personId}/tree`, {
       params: { max_generations: maxGenerations }

@@ -185,7 +185,7 @@ class PersonService:
         root_person_id: int,
         max_generations: int = 10
     ) -> Optional[Dict[str, Any]]:
-        """构建家谱树"""
+        """构建族谱树"""
         root = await PersonService.get_person_by_id(db, root_person_id)
         if not root:
             return None

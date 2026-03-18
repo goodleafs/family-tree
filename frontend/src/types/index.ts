@@ -117,7 +117,7 @@ export interface RelationshipUpdate {
   divorce_date?: string
 }
 
-// 家谱树节点
+// 族谱树节点
 export interface TreeNode {
   id: number
   name: string

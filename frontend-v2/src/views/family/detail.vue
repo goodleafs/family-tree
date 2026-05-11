@@ -153,40 +153,13 @@
       </div>
       
       <!-- 家族相册 -->
-      <div v-if="activeTab === 'album'" class="album-panel">
-        <div class="panel-header">
-          <h3>家族相册</h3>
-          <router-link :to="`/families/${familyId}/albums`" class="view-full-btn">进入相册</router-link>
-        </div>
-        <div class="empty-hint">
-          <div class="empty-icon">📸</div>
-          <p>点击"进入相册"查看和管理家族照片</p>
-        </div>
-      </div>
+      <AlbumTab v-if="activeTab === 'album'" :family-id="familyId" />
 
       <!-- 文献库 -->
-      <div v-if="activeTab === 'document'" class="document-panel">
-        <div class="panel-header">
-          <h3>文献库</h3>
-          <router-link :to="`/families/${familyId}/documents`" class="view-full-btn">进入文献库</router-link>
-        </div>
-        <div class="empty-hint">
-          <div class="empty-icon">📄</div>
-          <p>点击"进入文献库"管理老谱、契约、著作等文献</p>
-        </div>
-      </div>
+      <DocumentTab v-if="activeTab === 'document'" :family-id="familyId" />
 
       <!-- 人物传记 -->
-      <div v-if="activeTab === 'biography'" class="biography-panel">
-        <div class="panel-header">
-          <h3>人物传记</h3>
-          <router-link :to="`/families/${familyId}/biographies`" class="view-full-btn">进入传记</router-link>
-        </div>
-        <div class="empty-hint">
-          <div class="empty-icon">📖</div>
-          <p>点击"进入传记"为家族名人创建独立传记页面</p>
-        </div>
-      </div>
+      <BiographyTab v-if="activeTab === 'biography'" :family-id="familyId" />
 
       <!-- 功德榜 -->
       <div v-if="activeTab === 'merit'" class="merit-panel">
@@ -428,6 +401,9 @@ import { personApi } from '@/api/person'
 import { adminApi } from '@/api/admin'
 import { meritApi } from '@/api/merit'
 import { useUserStore } from '@/stores/user'
+import AlbumTab from '@/components/family/AlbumTab.vue'
+import DocumentTab from '@/components/family/DocumentTab.vue'
+import BiographyTab from '@/components/family/BiographyTab.vue'
 import type { Family, Person, FamilyMemberInfo, User, FamilyTree, TreeNode, MeritDonor } from '@/types'
 import * as d3 from 'd3'
 

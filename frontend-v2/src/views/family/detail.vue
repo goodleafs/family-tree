@@ -572,6 +572,11 @@ const fetchPersons = async () => {
   try {
     const res = await personApi.getFamilyPersons(familyId)
     persons.value = res.items
+    // 如果当前是族谱树 tab，自动加载
+    if (activeTab.value === 'tree' && persons.value.length > 0) {
+      selectedTreePerson.value = getRootPersonId()
+      if (selectedTreePerson.value) loadFamilyTree()
+    }
   } catch (error) {
     console.error(error)
   }
@@ -885,11 +890,28 @@ const handleRoleChange = async (member: FamilyMemberInfo) => {
   }
 }
 
+// 找到第一代成员（generation_number 最小的）作为族谱树根节点
+const getRootPersonId = (): number => {
+  if (persons.value.length === 0) return 0
+  // 找 generation_number 最小的成员
+  let minGen = Infinity
+  let rootId = persons.value[0].id
+  for (const p of persons.value) {
+    if (p.generation_number !== undefined && p.generation_number !== null && p.generation_number < minGen) {
+      minGen = p.generation_number
+      rootId = p.id
+    }
+  }
+  return rootId
+}
+
 // 监听选项卡变化，自动加载族谱树
 watch(activeTab, (newTab) => {
-  if (newTab === 'tree' && persons.value.length > 0 && !selectedTreePerson.value) {
-    selectedTreePerson.value = persons.value[0].id
-    loadFamilyTree()
+  if (newTab === 'tree' && persons.value.length > 0) {
+    selectedTreePerson.value = getRootPersonId()
+    if (selectedTreePerson.value) {
+      loadFamilyTree()
+    }
   }
   if (newTab === 'merit') {
     fetchMerit()

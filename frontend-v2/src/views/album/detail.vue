@@ -258,4 +258,8 @@ onMounted(fetchAlbum)
 .btn-cancel { padding: var(--space-2) var(--space-5); background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit { padding: var(--space-2) var(--space-5); background: var(--cinnabar); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit:disabled { opacity: 0.6; }
+
+@media (max-width: 768px) {
+  .photos-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+}
 </style>

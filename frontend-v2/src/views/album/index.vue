@@ -281,4 +281,11 @@ onMounted(fetchData)
 .btn-cancel { padding: var(--space-2) var(--space-5); background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit { padding: var(--space-2) var(--space-5); background: var(--cinnabar); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit:disabled { opacity: 0.6; }
+
+@media (max-width: 768px) {
+  .albums-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-3); }
+  .photos-row { gap: var(--space-2); }
+  .timeline-photo { width: 100%; }
+  .timeline-photo .photo-img { width: 100%; height: 180px; }
+}
 </style>

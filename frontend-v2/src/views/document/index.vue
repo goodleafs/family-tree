@@ -347,4 +347,19 @@ onMounted(fetchData)
 .preview-image { max-width: 100%; max-height: 100%; object-fit: contain; }
 .preview-pdf { width: 100%; height: 100%; border: none; }
 .preview-unsupported { text-align: center; color: var(--text-tertiary); }
+
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
+  .table-header { display: none; }
+  .table-row { flex-wrap: wrap; padding: var(--space-3); gap: var(--space-1); }
+  .table-row > div { width: auto !important; }
+  .td-preview { width: 40px; }
+  .td-title { width: calc(100% - 50px); }
+  .td-cat, .td-author, .td-type, .td-size { font-size: var(--text-xs); }
+  .td-actions { width: 100%; justify-content: flex-start; padding-top: var(--space-1); }
+  .categories-row { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .categories-row::-webkit-scrollbar { display: none; }
+  .cat-tag { white-space: nowrap; flex-shrink: 0; }
+  .form-row { flex-direction: column; gap: 0; }
+}
 </style>

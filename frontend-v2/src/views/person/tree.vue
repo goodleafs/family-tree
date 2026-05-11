@@ -458,4 +458,8 @@ onMounted(() => {
   user-select: none;
   pointer-events: none;
 }
+
+@media (max-width: 768px) {
+  .scroll-frame { margin: var(--space-2); padding: var(--space-2); }
+}
 </style>

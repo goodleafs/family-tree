@@ -375,6 +375,12 @@ onMounted(() => {
   padding: var(--space-4);
 }
 
+@media (max-width: 768px) {
+  .families-grid { grid-template-columns: 1fr; }
+  .search-section { flex-direction: column; }
+  .search-section input { width: 100%; }
+}
+
 .dialog {
   width: 100%;
   max-width: 480px;

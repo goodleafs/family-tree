@@ -186,3 +186,21 @@ a:hover {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* 移动端基础优化 */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+  h1 { font-size: var(--text-2xl); }
+  h2 { font-size: var(--text-xl); }
+  .page-header { flex-wrap: wrap; gap: var(--space-2); }
+  .page-header .page-title { min-width: 100%; order: -1; }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 14px; }
+  .dialog { width: 95vw !important; max-width: 95vw !important; }
+  button, .btn, .action-btn, .add-btn, .upload-btn,
+  .create-btn, .edit-btn, .save-btn, .cancel-btn, .danger-btn {
+    min-height: 36px;
+  }
+}

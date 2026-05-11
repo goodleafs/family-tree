@@ -219,4 +219,17 @@ onMounted(fetchData)
 .btn-cancel { padding: var(--space-2) var(--space-5); background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit { padding: var(--space-2) var(--space-5); background: var(--cinnabar); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; }
 .btn-submit:disabled { opacity: 0.6; }
+
+@media (max-width: 768px) {
+  .stats-row { flex-direction: column; gap: var(--space-2); }
+  .board-header { display: none; }
+  .board-row { flex-wrap: wrap; padding: var(--space-3); gap: var(--space-1); }
+  .board-row > div { width: auto !important; }
+  .col-rank { width: 30px; }
+  .col-name { flex: 1; }
+  .col-amount { width: 100%; text-align: left; }
+  .col-date { font-size: var(--text-xs); }
+  .col-remark { width: 100%; }
+  .col-actions { width: 100%; justify-content: flex-start; }
+}
 </style>

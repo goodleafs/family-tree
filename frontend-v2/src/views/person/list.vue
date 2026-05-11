@@ -90,4 +90,8 @@
   width: 20px;
   height: 20px;
 }
+
+@media (max-width: 768px) {
+  .guide-card { padding: var(--space-5); }
+}
 </style>

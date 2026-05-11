@@ -201,4 +201,12 @@ onMounted(fetchBiography)
 .empty-icon { font-size: 48px; margin-bottom: var(--space-4); }
 .loading-spinner { width: 32px; height: 32px; border: 3px solid var(--border-primary); border-top-color: var(--cinnabar); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto var(--space-4); }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .person-brief { flex-direction: column; align-items: center; text-align: center; }
+  .person-tags { justify-content: center; }
+  .views-count { position: static; margin-top: var(--space-2); }
+  .header-actions { flex-wrap: wrap; justify-content: flex-start; }
+  .page-title { font-size: var(--text-xl); }
+}
 </style>

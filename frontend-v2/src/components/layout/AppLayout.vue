@@ -146,9 +146,14 @@ const handleSidebarToggle = (collapsed: boolean) => {
   .app-main {
     padding-left: 0;
   }
-  
   .main-content {
     padding: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: var(--space-3);
   }
 }
 </style>

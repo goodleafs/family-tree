@@ -23,14 +23,13 @@
     </div>
 
     <div v-if="album && album.photos.length > 0" class="photos-grid">
-      <div v-for="(photo, idx) in album.photos" :key="photo.id" class="photo-card">
+      <div v-for="photo in album.photos" :key="photo.id" class="photo-card">
         <div class="photo-wrapper">
-          <el-image
+          <img
             :src="photo.thumbnail_url || photo.url"
-            :preview-src-list="previewUrls"
-            :initial-index="idx"
-            fit="cover"
             class="photo-img"
+            @click="previewUrl = photo.url; showPreview = true"
+            alt=""
           />
           <button class="remove-btn" @click="handleDeletePhoto(photo)">×</button>
         </div>
@@ -38,6 +37,14 @@
           <p v-if="photo.title" class="photo-title">{{ photo.title }}</p>
           <p v-if="photo.taken_date" class="photo-date">{{ photo.taken_date }}</p>
         </div>
+      </div>
+    </div>
+
+    <!-- 图片预览 -->
+    <div class="dialog-overlay preview-overlay" v-if="showPreview" @click="showPreview = false">
+      <div class="preview-container" @click.stop>
+        <button class="preview-close" @click="showPreview = false">×</button>
+        <img :src="previewUrl" class="preview-image" alt="" />
       </div>
     </div>
 
@@ -74,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { albumApi } from '@/api/album'
 import type { AlbumDetail, Photo } from '@/types'
@@ -92,7 +99,8 @@ const uploadTitle = ref('')
 const uploadDate = ref('')
 const uploading = ref(false)
 
-const previewUrls = computed(() => album.value?.photos.map(p => p.url) || [])
+const showPreview = ref(false)
+const previewUrl = ref('')
 
 const fetchAlbum = async () => {
   try {
@@ -152,7 +160,7 @@ onMounted(fetchAlbum)
 .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
 .photo-card { background: var(--bg-primary); border: 1px solid var(--border-primary); border-radius: var(--radius-md); overflow: hidden; }
 .photo-wrapper { position: relative; height: 180px; }
-.photo-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+.photo-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
 .remove-btn { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity var(--transition-fast); }
 .photo-card:hover .remove-btn { opacity: 1; }
 .photo-info { padding: var(--space-3); }
@@ -161,6 +169,12 @@ onMounted(fetchAlbum)
 
 .empty-hint { text-align: center; padding: var(--space-10); color: var(--text-tertiary); }
 .empty-icon { font-size: 48px; margin-bottom: var(--space-4); }
+
+/* 图片预览 */
+.preview-overlay { background: rgba(0,0,0,0.85); }
+.preview-container { position: relative; max-width: 90vw; max-height: 90vh; display: flex; align-items: center; justify-content: center; }
+.preview-image { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: var(--radius-md); }
+.preview-close { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; border: none; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
 
 /* Upload zone */
 .upload-zone { border: 2px dashed var(--border-primary); border-radius: var(--radius-md); padding: var(--space-8); text-align: center; cursor: pointer; color: var(--text-tertiary); margin-bottom: var(--space-4); }

@@ -64,11 +64,11 @@
           <div class="year-label">{{ group.year }}年</div>
           <div class="photos-row">
             <div v-for="photo in group.photos" :key="photo.id" class="timeline-photo">
-              <el-image
+              <img
                 :src="photo.thumbnail_url || photo.url"
-                :preview-src-list="[photo.url]"
-                fit="cover"
                 class="photo-img"
+                @click="openPhoto(photo.url)"
+                alt=""
               />
               <p v-if="photo.title" class="photo-title">{{ photo.title }}</p>
             </div>
@@ -164,6 +164,7 @@ const handleDeleteAlbum = async (album: Album) => {
 }
 
 const filterTimeline = () => {}
+const openPhoto = (url: string) => window.open(url, '_blank')
 const formatDate = (d: string) => new Date(d).toLocaleDateString('zh-CN')
 
 onMounted(fetchData)

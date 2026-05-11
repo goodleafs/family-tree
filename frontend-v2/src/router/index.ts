@@ -107,6 +107,12 @@ const router = createRouter({
       meta: { requiresAuth: true, title: '传记详情' }
     },
     {
+      path: '/families/:id/merit',
+      name: 'FamilyMerit',
+      component: () => import('@/views/merit/index.vue'),
+      meta: { requiresAuth: true, title: '功德榜' }
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: () => import('@/views/user/profile.vue'),

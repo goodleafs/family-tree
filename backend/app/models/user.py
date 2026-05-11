@@ -27,6 +27,7 @@ class User(Base):
     uploaded_photos = relationship("Photo", back_populates="uploader")
     uploaded_documents = relationship("Document", back_populates="uploader")
     created_biographies = relationship("PersonBiography", back_populates="creator")
+    created_merit_donors = relationship("MeritDonor", back_populates="creator")
     
     def __repr__(self):
         return f"<User {self.username}>"

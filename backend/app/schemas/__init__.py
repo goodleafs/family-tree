@@ -19,6 +19,9 @@ from app.schemas.biography import (
     BiographyBase, BiographyCreate, BiographyUpdate, BiographyResponse, BiographyListItem,
     BiographyDetailResponse, BiographyListResponse, PersonBriefForBiography
 )
+from app.schemas.merit import (
+    MeritDonorBase, MeritDonorCreate, MeritDonorUpdate, MeritDonorResponse, MeritDonorListResponse
+)
 
 __all__ = [
     # User schemas
@@ -44,5 +47,7 @@ __all__ = [
     "DocumentCategoryCount", "DocumentOverviewResponse",
     # Biography schemas
     "BiographyBase", "BiographyCreate", "BiographyUpdate", "BiographyResponse", "BiographyListItem",
-    "BiographyDetailResponse", "BiographyListResponse", "PersonBriefForBiography"
+    "BiographyDetailResponse", "BiographyListResponse", "PersonBriefForBiography",
+    # Merit schemas
+    "MeritDonorBase", "MeritDonorCreate", "MeritDonorUpdate", "MeritDonorResponse", "MeritDonorListResponse"
 ]

@@ -274,6 +274,26 @@ export interface BiographyListItem {
   updated_at: string
 }
 
+// 功德榜相关
+export interface MeritDonor {
+  id: number
+  family_id: number
+  donor_name: string
+  amount: number
+  donation_date?: string
+  remarks?: string
+  sort_order: number
+  created_by: number
+  created_at: string
+  updated_at: string
+}
+
+export interface MeritDonorListResponse {
+  total: number
+  total_amount: number
+  items: MeritDonor[]
+}
+
 // API 响应
 export interface ApiResponse<T> {
   data: T

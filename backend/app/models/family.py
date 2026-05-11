@@ -27,6 +27,7 @@ class Family(Base):
     photos = relationship("Photo", back_populates="family", cascade="all, delete-orphan")
     documents = relationship("Document", back_populates="family", cascade="all, delete-orphan")
     biographies = relationship("PersonBiography", back_populates="family", cascade="all, delete-orphan")
+    merit_donors = relationship("MeritDonor", back_populates="family", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<Family {self.name}>"

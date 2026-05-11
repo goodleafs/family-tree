@@ -5,8 +5,9 @@ from app.services.memorial_service import MemorialService
 from app.services.album_service import AlbumService
 from app.services.document_service import DocumentService
 from app.services.biography_service import BiographyService
+from app.services.merit_service import MeritService
 
 __all__ = [
     "AuthService", "FamilyService", "PersonService", "MemorialService",
-    "AlbumService", "DocumentService", "BiographyService"
+    "AlbumService", "DocumentService", "BiographyService", "MeritService"
 ]

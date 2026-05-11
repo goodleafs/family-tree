@@ -12,6 +12,7 @@ from app.routers.memorial import router as memorial_router
 from app.routers.album import router as album_router
 from app.routers.document import router as document_router
 from app.routers.biography import router as biography_router
+from app.routers.merit import router as merit_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -52,6 +53,7 @@ app.include_router(memorial_router, prefix="/api/v1")
 app.include_router(album_router, prefix="/api/v1")
 app.include_router(document_router, prefix="/api/v1")
 app.include_router(biography_router, prefix="/api/v1")
+app.include_router(merit_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():

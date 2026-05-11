@@ -188,6 +188,18 @@
         </div>
       </div>
 
+      <!-- 功德榜 -->
+      <div v-if="activeTab === 'merit'" class="merit-panel">
+        <div class="panel-header">
+          <h3>功德榜</h3>
+          <router-link :to="`/families/${familyId}/merit`" class="view-full-btn">进入功德榜</router-link>
+        </div>
+        <div class="empty-hint">
+          <div class="empty-icon">🏆</div>
+          <p>点击"进入功德榜"记录宗亲修谱捐款</p>
+        </div>
+      </div>
+
       <!-- 族谱权限管理 -->
       <div v-if="activeTab === 'roles'" class="roles-panel">
         <div class="panel-header">
@@ -369,6 +381,7 @@ const tabs = [
   { key: 'album', label: '家族相册' },
   { key: 'document', label: '文献库' },
   { key: 'biography', label: '人物传记' },
+  { key: 'merit', label: '功德榜' },
   { key: 'roles', label: '权限管理' }
 ]
 

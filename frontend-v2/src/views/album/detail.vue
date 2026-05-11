@@ -34,7 +34,12 @@
           <button class="remove-btn" @click="handleDeletePhoto(photo)">×</button>
         </div>
         <div class="photo-info">
-          <p v-if="photo.title" class="photo-title">{{ photo.title }}</p>
+          <div class="photo-title-row">
+            <p class="photo-title">{{ photo.title || '未命名' }}</p>
+            <button class="edit-title-btn" @click="openEditPhoto(photo)">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M10 1l3 3-8 8H2v-3l8-8z" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+          </div>
           <p v-if="photo.taken_date" class="photo-date">{{ photo.taken_date }}</p>
         </div>
       </div>
@@ -45,6 +50,30 @@
       <div class="preview-container" @click.stop>
         <button class="preview-close" @click="showPreview = false">×</button>
         <img :src="previewUrl" class="preview-image" alt="" />
+      </div>
+    </div>
+
+    <!-- 编辑照片对话框 -->
+    <div class="dialog-overlay" v-if="showEditDialog" @click="showEditDialog = false">
+      <div class="dialog" @click.stop>
+        <div class="dialog-header">
+          <h2>编辑照片</h2>
+          <button class="close-btn" @click="showEditDialog = false">×</button>
+        </div>
+        <div class="dialog-body">
+          <div class="form-group">
+            <label>标题</label>
+            <input v-model="editTitle" placeholder="未命名" />
+          </div>
+          <div class="form-group">
+            <label>拍摄日期</label>
+            <input type="date" v-model="editDate" />
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="btn-cancel" @click="showEditDialog = false">取消</button>
+          <button class="btn-submit" :disabled="editSaving" @click="handleEditPhoto">{{ editSaving ? '保存中...' : '保存' }}</button>
+        </div>
       </div>
     </div>
 
@@ -101,6 +130,34 @@ const uploading = ref(false)
 
 const showPreview = ref(false)
 const previewUrl = ref('')
+
+const showEditDialog = ref(false)
+const editingPhoto = ref<Photo | null>(null)
+const editTitle = ref('')
+const editDate = ref('')
+const editSaving = ref(false)
+
+const openEditPhoto = (photo: Photo) => {
+  editingPhoto.value = photo
+  editTitle.value = photo.title || ''
+  editDate.value = photo.taken_date || ''
+  showEditDialog.value = true
+}
+
+const handleEditPhoto = async () => {
+  if (!editingPhoto.value) return
+  editSaving.value = true
+  try {
+    await albumApi.updatePhoto(editingPhoto.value.id, {
+      title: editTitle.value || '未命名',
+      taken_date: editDate.value || undefined
+    })
+    showEditDialog.value = false
+    fetchAlbum()
+  } finally {
+    editSaving.value = false
+  }
+}
 
 const fetchAlbum = async () => {
   try {
@@ -164,7 +221,12 @@ onMounted(fetchAlbum)
 .remove-btn { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity var(--transition-fast); }
 .photo-card:hover .remove-btn { opacity: 1; }
 .photo-info { padding: var(--space-3); }
-.photo-title { margin: 0; font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.photo-title-row { display: flex; align-items: center; gap: var(--space-1); }
+.photo-title { margin: 0; font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.edit-title-btn { flex-shrink: 0; background: none; border: none; color: var(--text-tertiary); cursor: pointer; padding: 2px; opacity: 0; transition: opacity var(--transition-fast); display: flex; align-items: center; }
+.edit-title-btn svg { width: 12px; height: 12px; }
+.photo-card:hover .edit-title-btn { opacity: 1; }
+.edit-title-btn:hover { color: var(--cinnabar); }
 .photo-date { margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--text-tertiary); }
 
 .empty-hint { text-align: center; padding: var(--space-10); color: var(--text-tertiary); }

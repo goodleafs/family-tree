@@ -225,6 +225,10 @@ async def upload_album_photo(
         file_name = Path(file_path).name
         thumb_url = f"/uploads/albums/thumb_{file_name}"
 
+        # 标题为空时默认为"未命名"
+        if not title:
+            title = "未命名"
+
         # 解析拍摄日期
         parsed_date = None
         if taken_date:

@@ -192,11 +192,46 @@
       <div v-if="activeTab === 'merit'" class="merit-panel">
         <div class="panel-header">
           <h3>功德榜</h3>
-          <router-link :to="`/families/${familyId}/merit`" class="view-full-btn">进入功德榜</router-link>
+          <button class="add-btn" @click="openAddDonor">添加记录</button>
         </div>
-        <div class="empty-hint">
+
+        <div class="merit-stats">
+          <div class="merit-stat"><span class="ms-val">{{ meritTotal }}</span><span class="ms-lbl">捐款人次</span></div>
+          <div class="merit-stat"><span class="ms-val">{{ formatMoney(meritTotalAmount) }}</span><span class="ms-lbl">捐款总额（元）</span></div>
+        </div>
+
+        <div v-if="meritList.length === 0" class="empty-hint">
           <div class="empty-icon">🏆</div>
-          <p>点击"进入功德榜"记录宗亲修谱捐款</p>
+          <p>暂无捐款记录</p>
+        </div>
+
+        <div v-else class="merit-board">
+          <div class="board-header">
+            <div class="b-col-rank">排名</div>
+            <div class="b-col-name">捐款人</div>
+            <div class="b-col-amount">金额（元）</div>
+            <div class="b-col-date">日期</div>
+            <div class="b-col-remark">备注</div>
+            <div class="b-col-actions">操作</div>
+          </div>
+          <div class="board-body">
+            <div v-for="(d, idx) in meritList" :key="d.id" class="board-row" :class="{ 'top-three': idx < 3 }">
+              <div class="b-col-rank">
+                <span v-if="idx === 0" class="medal">🥇</span>
+                <span v-else-if="idx === 1" class="medal">🥈</span>
+                <span v-else-if="idx === 2" class="medal">🥉</span>
+                <span v-else class="rank-num">{{ idx + 1 }}</span>
+              </div>
+              <div class="b-col-name">{{ d.donor_name }}</div>
+              <div class="b-col-amount"><span class="amount-text">{{ formatMoney(d.amount) }}</span></div>
+              <div class="b-col-date">{{ d.donation_date || '-' }}</div>
+              <div class="b-col-remark">{{ d.remarks || '-' }}</div>
+              <div class="b-col-actions">
+                <button class="action-btn" @click="openEditDonor(d)">编辑</button>
+                <button class="action-btn danger" @click="handleDeleteDonor(d)">删除</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -318,6 +353,38 @@
       </div>
     </div>
     
+    <!-- 功德榜对话框 -->
+    <div class="dialog-overlay" v-if="showDonorDialog" @click="showDonorDialog = false">
+      <div class="dialog" @click.stop>
+        <div class="dialog-header">
+          <h2>{{ isEditDonor ? '编辑捐款记录' : '添加捐款记录' }}</h2>
+          <button class="close-btn" @click="showDonorDialog = false">×</button>
+        </div>
+        <div class="dialog-body">
+          <div class="form-group">
+            <label>捐款人姓名 <span class="required">*</span></label>
+            <input v-model="donorForm.donor_name" placeholder="请输入姓名" />
+          </div>
+          <div class="form-group">
+            <label>捐款金额（元） <span class="required">*</span></label>
+            <input type="number" v-model.number="donorForm.amount" placeholder="请输入金额" min="0.01" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>捐款日期</label>
+            <input type="date" v-model="donorForm.donation_date" />
+          </div>
+          <div class="form-group">
+            <label>备注</label>
+            <textarea v-model="donorForm.remarks" rows="2" placeholder="可选"></textarea>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="btn-cancel" @click="showDonorDialog = false">取消</button>
+          <button class="btn-submit" :disabled="donorSaving" @click="handleSaveDonor">{{ donorSaving ? '保存中...' : '保存' }}</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 添加系统用户为家族成员对话框 -->
     <div class="dialog-overlay" v-if="showAddMemberDialog" @click="showAddMemberDialog = false">
       <div class="dialog" @click.stop>
@@ -354,13 +421,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick, watch } from 'vue'
+import { ref, reactive, onMounted, computed, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { familyApi } from '@/api/family'
 import { personApi } from '@/api/person'
 import { adminApi } from '@/api/admin'
+import { meritApi } from '@/api/merit'
 import { useUserStore } from '@/stores/user'
-import type { Family, Person, FamilyMemberInfo, User, FamilyTree, TreeNode } from '@/types'
+import type { Family, Person, FamilyMemberInfo, User, FamilyTree, TreeNode, MeritDonor } from '@/types'
 import * as d3 from 'd3'
 
 const route = useRoute()
@@ -450,6 +518,68 @@ const canManageRoles = computed(() => {
 const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString('zh-CN')
 }
+
+// 功德榜
+const meritList = ref<MeritDonor[]>([])
+const meritTotal = ref(0)
+const meritTotalAmount = ref(0)
+const showDonorDialog = ref(false)
+const isEditDonor = ref(false)
+const editingDonorId = ref(0)
+const donorSaving = ref(false)
+const donorForm = reactive({ donor_name: '', amount: 0, donation_date: '', remarks: '' })
+
+const fetchMerit = async () => {
+  try {
+    const res = await meritApi.getDonors(familyId)
+    meritList.value = res.items
+    meritTotal.value = res.total
+    meritTotalAmount.value = res.total_amount
+  } catch (e) { console.error(e) }
+}
+
+const openAddDonor = () => {
+  isEditDonor.value = false
+  editingDonorId.value = 0
+  donorForm.donor_name = ''
+  donorForm.amount = 0
+  donorForm.donation_date = ''
+  donorForm.remarks = ''
+  showDonorDialog.value = true
+}
+
+const openEditDonor = (d: MeritDonor) => {
+  isEditDonor.value = true
+  editingDonorId.value = d.id
+  donorForm.donor_name = d.donor_name
+  donorForm.amount = d.amount
+  donorForm.donation_date = d.donation_date || ''
+  donorForm.remarks = d.remarks || ''
+  showDonorDialog.value = true
+}
+
+const handleSaveDonor = async () => {
+  if (!donorForm.donor_name || !donorForm.amount || donorForm.amount <= 0) return
+  donorSaving.value = true
+  try {
+    const data = { donor_name: donorForm.donor_name, amount: donorForm.amount, donation_date: donorForm.donation_date || undefined, remarks: donorForm.remarks || undefined }
+    if (isEditDonor.value) {
+      await meritApi.updateDonor(editingDonorId.value, data as any)
+    } else {
+      await meritApi.createDonor({ family_id: familyId, ...data } as any)
+    }
+    showDonorDialog.value = false
+    fetchMerit()
+  } finally { donorSaving.value = false }
+}
+
+const handleDeleteDonor = async (d: MeritDonor) => {
+  if (!confirm(`确定删除 ${d.donor_name} 的捐款记录吗？`)) return
+  await meritApi.deleteDonor(d.id)
+  fetchMerit()
+}
+
+const formatMoney = (v: number) => v.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 // 获取家族信息
 const fetchFamily = async () => {
@@ -784,6 +914,9 @@ watch(activeTab, (newTab) => {
   if (newTab === 'tree' && persons.value.length > 0 && !selectedTreePerson.value) {
     selectedTreePerson.value = persons.value[0].id
     loadFamilyTree()
+  }
+  if (newTab === 'merit') {
+    fetchMerit()
   }
 })
 
@@ -1153,6 +1286,26 @@ onMounted(() => {
   border-radius: var(--radius-lg);
   color: var(--text-tertiary);
 }
+
+/* 功德榜 */
+.merit-stats { display: flex; gap: var(--space-4); margin-bottom: var(--space-5); }
+.merit-stat { flex: 1; background: var(--bg-primary); border: 1px solid var(--border-primary); border-radius: var(--radius-lg); padding: var(--space-4); text-align: center; }
+.ms-val { display: block; font-size: var(--text-xl); font-weight: var(--font-bold); color: var(--cinnabar); }
+.ms-lbl { font-size: var(--text-xs); color: var(--text-tertiary); margin-top: var(--space-1); display: block; }
+.merit-board { border: 1px solid var(--border-primary); border-radius: var(--radius-md); overflow: hidden; }
+.board-header { display: flex; background: var(--bg-secondary); font-size: var(--text-xs); color: var(--text-tertiary); padding: var(--space-2) var(--space-3); font-weight: var(--font-medium); }
+.board-row { display: flex; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--border-primary); align-items: center; font-size: var(--text-sm); }
+.board-row:hover { background: var(--bg-secondary); }
+.board-row.top-three { background: var(--cinnabar-pale); }
+.b-col-rank { width: 50px; text-align: center; }
+.b-col-name { flex: 1; font-weight: var(--font-medium); }
+.b-col-amount { width: 120px; text-align: right; }
+.b-col-date { width: 100px; }
+.b-col-remark { flex: 1; color: var(--text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.b-col-actions { width: 100px; display: flex; gap: var(--space-2); justify-content: center; }
+.medal { font-size: 16px; }
+.rank-num { font-size: var(--text-sm); color: var(--text-secondary); }
+.amount-text { font-weight: var(--font-semibold); color: var(--cinnabar); }
 
 .tree-visualization {
   background: var(--bg-secondary);

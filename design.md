@@ -9,12 +9,13 @@
 ### 后端
 - **框架**: FastAPI 0.104.1
 - **数据库**: SQLite + SQLAlchemy 2.0.23
+- **ORM**: SQLAlchemy 2.0 async (selectinload)
 - **认证**: JWT + bcrypt
 - **PDF生成**: ReportLab 4.0.7
 - **Excel处理**: OpenPyXL 3.1.2
 - **图片处理**: Pillow 10.1.0
 
-### 前端
+### 前端 (v1 - Element Plus)
 - **框架**: Vue 3.3.8 + TypeScript
 - **构建工具**: Vite 5.0.0
 - **UI组件库**: Element Plus 2.4.4
@@ -24,82 +25,86 @@
 - **HTTP客户端**: Axios 1.6.2
 - **Excel解析**: xlsx 0.18.5
 
+### 前端 (v2 - 主推，中式传统典雅风格)
+- **框架**: Vue 3 + TypeScript 5.3
+- **构建工具**: Vite 5.x
+- **UI**: 自定义组件库（GCard、GButton、GInput）
+- **样式**: CSS 变量体系（--cinnabar朱砂红、--indigo靛蓝、--bamboo竹绿等）
+- **状态管理**: Pinia 2.1.7
+- **路由**: Vue Router 4.x
+- **可视化**: D3.js 7.x
+- **HTTP客户端**: Axios 1.6.x
+- **工具库**: @vueuse/core 10.x, lunar-javascript 1.x
+
 ## 项目目录结构
 
 ```
-genealogy-system/
+family-tree/
 ├── backend/                      # FastAPI 后端
 │   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py              # FastAPI 入口
-│   │   ├── config.py            # 配置文件
-│   │   ├── database.py          # 数据库连接
+│   │   ├── main.py              # FastAPI 入口（注册所有路由）
+│   │   ├── config.py            # 配置（pydantic-settings）
+│   │   ├── database.py          # 异步数据库连接
+│   │   ├── jwt.py               # JWT 配置
 │   │   ├── models/              # SQLAlchemy 模型
 │   │   │   ├── __init__.py
-│   │   │   ├── user.py          # 用户模型
-│   │   │   ├── family.py        # 家族模型
-│   │   │   └── person.py        # 成员模型
-│   │   ├── schemas/             # Pydantic 数据验证
+│   │   │   ├── user.py          # 用户
+│   │   │   ├── family.py        # 家族 + 家族成员角色
+│   │   │   ├── person.py        # 人员 + 亲属关系
+│   │   │   ├── memorial.py      # 灵堂 + 祭拜记录
+│   │   │   ├── album.py         # 相册 + 照片
+│   │   │   ├── document.py      # 文献
+│   │   │   └── biography.py     # 人物传记
+│   │   ├── schemas/             # Pydantic 校验
 │   │   │   ├── __init__.py
-│   │   │   ├── user.py
-│   │   │   ├── family.py
-│   │   │   └── person.py
+│   │   │   ├── user.py / family.py / person.py
+│   │   │   ├── memorial.py / album.py / document.py / biography.py
 │   │   ├── routers/             # API 路由
 │   │   │   ├── __init__.py
-│   │   │   ├── auth.py          # 认证相关
-│   │   │   ├── family.py        # 家族管理
-│   │   │   └── person.py        # 成员管理
-│   │   ├── services/            # 业务逻辑
+│   │   │   ├── auth.py / family.py / person.py
+│   │   │   ├── memorial.py / admin.py
+│   │   │   ├── album.py / document.py / biography.py
+│   │   ├── services/            # 业务逻辑层
 │   │   │   ├── __init__.py
-│   │   │   ├── auth_service.py
-│   │   │   ├── family_service.py
-│   │   │   └── person_service.py
+│   │   │   ├── auth_service.py / family_service.py / person_service.py
+│   │   │   ├── memorial_service.py
+│   │   │   ├── album_service.py / document_service.py / biography_service.py
 │   │   └── utils/               # 工具函数
-│   │       ├── __init__.py
-│   │       ├── auth.py          # JWT 工具
-│   │       └── file_upload.py   # 文件上传
-│   ├── uploads/                 # 上传文件存储
-│   ├── tests/
-│   ├── requirements.txt
-│   └── README.md
+│   │       ├── auth.py          # JWT + bcrypt
+│   │       └── file_upload.py   # 文件上传（含文档验证）
+│   ├── uploads/                 # 上传文件（photos/albums/documents/avatars）
+│   └── requirements.txt
 │
-├── frontend/                     # Vue3 前端
+├── frontend/                     # Vue3 前端（旧版 - Element Plus）
 │   ├── src/
-│   │   ├── main.ts              # Vue 入口
-│   │   ├── App.vue
-│   │   ├── router/              # Vue Router
-│   │   │   └── index.ts
-│   │   ├── stores/              # Pinia 状态管理
-│   │   │   ├── auth.ts
-│   │   │   ├── family.ts
-│   │   │   └── person.ts
-│   │   ├── api/                 # API 请求封装
-│   │   │   ├── request.ts       # axios 封装
-│   │   │   ├── auth.ts
-│   │   │   ├── family.ts
-│   │   │   └── person.ts
-│   │   ├── components/          # 组件
-│   │   │   ├── common/          # 通用组件
-│   │   │   ├── family/          # 家族相关
-│   │   │   └── person/          # 成员相关
-│   │   ├── views/               # 页面
-│   │   │   ├── auth/
-│   │   │   ├── dashboard/
-│   │   │   ├── family/
-│   │   │   └── person/
-│   │   ├── utils/               # 工具函数
-│   │   ├── types/               # TypeScript 类型
-│   │   └── assets/              # 静态资源
-│   ├── public/
-│   ├── index.html
-│   ├── vite.config.ts
-│   ├── tsconfig.json
-│   └── package.json
+│   │   ├── main.ts / App.vue
+│   │   ├── router/index.ts
+│   │   ├── stores/user.ts
+│   │   ├── api/                 # request.ts + auth/family/person/memorial/album/document/biography
+│   │   ├── views/               # auth/dashboard/family/person/memorial/album/document/biography
+│   │   ├── types/index.ts
+│   │   └── utils/lunar.ts
+│   ├── index.html / package.json / vite.config.ts / tsconfig.json
 │
-├── database/                     # 数据库文件
+├── frontend-v2/                  # Vue3 前端（新版主推 - 中式典雅风格）
+│   ├── src/
+│   │   ├── main.ts / App.vue
+│   │   ├── router/index.ts
+│   │   ├── stores/user.ts
+│   │   ├── api/                 # request.ts + auth/family/person/memorial/album/document/biography/admin
+│   │   ├── views/               # auth/dashboard/family/person/memorial/album/document/biography/user/admin
+│   │   ├── components/          # common(GCard/GButton/GInput) + layout(AppLayout/AppHeader/AppSidebar)
+│   │   ├── types/index.ts
+│   │   └── utils/lunar.ts
+│   ├── index.html / package.json / vite.config.ts / tsconfig.json
+│
+├── database/                     # SQLite 数据库
 │   └── genealogy.db
 │
-└── README.md
+├── README.md                     # 项目说明
+├── AGENTS.md                     # AI 编码规范
+├── CHANGELOG.md                  # 变更日志
+└── design.md                     # 设计文档（本文档）
 ```
 
 ## 数据库模型设计
@@ -210,6 +215,91 @@ CREATE TABLE family_events (
 );
 ```
 
+### 相册表 (Album)
+```sql
+CREATE TABLE albums (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    family_id INTEGER NOT NULL,
+    name VARCHAR(100) NOT NULL,               -- 相册名称
+    description TEXT,                          -- 相册描述
+    cover_url VARCHAR(255),                   -- 封面照片URL
+    sort_order INTEGER DEFAULT 0,             -- 排序
+    created_by INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (family_id) REFERENCES families(id),
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+```
+
+### 照片表 (Photo)
+```sql
+CREATE TABLE photos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    album_id INTEGER,                          -- 所属相册（NULL表示未归类）
+    family_id INTEGER NOT NULL,
+    title VARCHAR(200),                        -- 照片标题
+    description TEXT,
+    url VARCHAR(255) NOT NULL,                 -- 文件路径
+    thumbnail_url VARCHAR(255),                -- 缩略图路径
+    taken_date DATE,                           -- 拍摄日期
+    taken_year INTEGER,                        -- 拍摄年份（用于时间轴）
+    taken_month INTEGER,
+    file_size INTEGER,
+    uploader_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (album_id) REFERENCES albums(id),
+    FOREIGN KEY (family_id) REFERENCES families(id),
+    FOREIGN KEY (uploader_id) REFERENCES users(id)
+);
+```
+
+### 文献表 (Document)
+```sql
+CREATE TABLE documents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    family_id INTEGER NOT NULL,
+    title VARCHAR(200) NOT NULL,              -- 文献标题
+    description TEXT,
+    file_type VARCHAR(50) NOT NULL,           -- pdf, image, doc, other
+    file_url VARCHAR(255) NOT NULL,
+    file_size BIGINT,
+    file_ext VARCHAR(20),                     -- 文件扩展名
+    author VARCHAR(100),                      -- 文献作者
+    document_date VARCHAR(50),                -- 文献日期（原文）
+    tags VARCHAR(500),                        -- 标签（逗号分隔）
+    category VARCHAR(50),                     -- 分类: genealogy/contract/writing/other
+    uploader_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (family_id) REFERENCES families(id),
+    FOREIGN KEY (uploader_id) REFERENCES users(id)
+);
+```
+
+### 人物传记表 (PersonBiography)
+```sql
+CREATE TABLE person_biographies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER NOT NULL UNIQUE,        -- 关联人员
+    family_id INTEGER NOT NULL,
+    title VARCHAR(200),                       -- 传记标题（如"XX公传"）
+    subtitle VARCHAR(300),                    -- 副标题
+    summary TEXT,                             -- 摘要/导语
+    content TEXT NOT NULL,                    -- 传记正文（支持HTML）
+    achievements TEXT,                        -- 主要成就
+    portrait_url VARCHAR(255),               -- 传记专用肖像
+    is_published BOOLEAN DEFAULT TRUE,
+    views_count INTEGER DEFAULT 0,           -- 浏览次数
+    created_by INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (person_id) REFERENCES persons(id),
+    FOREIGN KEY (family_id) REFERENCES families(id),
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+```
+
 ## API 接口设计
 
 ### 认证相关
@@ -240,8 +330,37 @@ CREATE TABLE family_events (
 - `POST /api/v1/relationships` - 创建亲属关系
 - `DELETE /api/v1/relationships/{id}` - 删除亲属关系
 
+### 家族相册
+- `GET /api/v1/albums/family/{family_id}` - 获取家族相册列表
+- `POST /api/v1/albums` - 创建相册
+- `GET /api/v1/albums/{album_id}` - 获取相册详情（含照片）
+- `PUT /api/v1/albums/{album_id}` - 更新相册信息
+- `DELETE /api/v1/albums/{album_id}` - 删除相册
+- `GET /api/v1/albums/{album_id}/photos` - 获取相册照片列表
+- `POST /api/v1/albums/{album_id}/photos` - 上传照片到相册
+- `PUT /api/v1/albums/photos/{photo_id}` - 更新照片信息
+- `DELETE /api/v1/albums/photos/{photo_id}` - 删除照片
+- `GET /api/v1/albums/family/{family_id}/timeline` - 获取家族照片时间轴
+
+### 文献管理
+- `GET /api/v1/documents/family/{family_id}` - 获取家族文献列表（支持分类+搜索）
+- `GET /api/v1/documents/family/{family_id}/overview` - 获取文献库概览（分类统计）
+- `POST /api/v1/documents` - 上传文献
+- `GET /api/v1/documents/{document_id}` - 获取文献详情
+- `PUT /api/v1/documents/{document_id}` - 更新文献信息
+- `DELETE /api/v1/documents/{document_id}` - 删除文献
+
+### 人物传记
+- `GET /api/v1/biographies/family/{family_id}` - 获取家族传记列表
+- `POST /api/v1/biographies` - 创建传记
+- `GET /api/v1/biographies/{biography_id}` - 获取传记详情（自动增加浏览数）
+- `PUT /api/v1/biographies/{biography_id}` - 更新传记
+- `DELETE /api/v1/biographies/{biography_id}` - 删除传记
+- `GET /api/v1/biographies/eligible-persons/{family_id}` - 获取可创建传记的人员列表
+- `GET /api/v1/biographies/by-person/{person_id}` - 按人员ID获取传记
+
 ### 文件上传
-- `POST /api/v1/upload/photo` - 上传照片
+- `POST /api/v1/upload/photo` - 上传照片（旧接口，建议使用相册上传）
 
 ### 导出功能
 - `GET /api/v1/families/{id}/export/pdf` - 导出完整家族PDF
@@ -400,11 +519,15 @@ pandas==2.1.3
 ✅ 用户认证 - JWT + bcrypt 安全认证系统  
 ✅ 权限管理 - 管理员/编辑者/成员三级权限  
 ✅ 族谱可视化 - D3.js 交互式树形图（缩放/拖拽/点击查看）  
-✅ PDF 导出 - ReportLab 专业族谱图（多模板/多尺寸/水印）  
-✅ 打印预览 - 实时打印效果预览，支持浏览器打印  
-✅ Excel 导入 - 批量导入成员数据，含验证和冲突检测  
-✅ 响应式设计 - 移动端优先，触摸优化  
-✅ 本地图片存储 - 文件系统 + 缩略图生成  
+✅ 祭拜管理 - 灵堂布置、在线供奉、追思留言  
+✅ 家族相册 - 相册集管理、照片上传、时间轴展示  
+✅ 文献库 - 文献上传、分类管理、PDF/图片预览  
+✅ 人物传记 - 独立传记页面、富文本编辑、浏览量统计  
+✅ PDF 导出 - 成员信息导出（html2pdf.js）  
+✅ Excel 导入 - 批量导入成员数据  
+✅ 响应式设计 - 桌面/平板/移动端适配  
+✅ 前端双版本 - v1（Element Plus）+ v2（自定义中式风格）  
+✅ 本地文件存储 - 文件系统 + 缩略图生成  
 
 ---
 

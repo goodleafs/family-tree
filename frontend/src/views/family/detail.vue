@@ -586,6 +586,63 @@ watch(activeTab, (newTab) => {
         </el-card>
       </el-tab-pane>
       
+      <!-- 家族相册 -->
+      <el-tab-pane label="家族相册" name="album">
+        <el-card>
+          <template #header>
+            <div class="card-header">
+              <span>家族相册</span>
+              <el-button type="primary" @click="$router.push(`/families/${familyId}/albums`)">
+                进入相册
+              </el-button>
+            </div>
+          </template>
+          <el-empty>
+            <template #description>
+              点击「进入相册」查看和管理家族照片
+            </template>
+          </el-empty>
+        </el-card>
+      </el-tab-pane>
+
+      <!-- 文献库 -->
+      <el-tab-pane label="文献库" name="document">
+        <el-card>
+          <template #header>
+            <div class="card-header">
+              <span>文献库</span>
+              <el-button type="primary" @click="$router.push(`/families/${familyId}/documents`)">
+                进入文献库
+              </el-button>
+            </div>
+          </template>
+          <el-empty>
+            <template #description>
+              点击「进入文献库」管理老谱、契约、著作等文献
+            </template>
+          </el-empty>
+        </el-card>
+      </el-tab-pane>
+
+      <!-- 人物传记 -->
+      <el-tab-pane label="人物传记" name="biography">
+        <el-card>
+          <template #header>
+            <div class="card-header">
+              <span>人物传记</span>
+              <el-button type="primary" @click="$router.push(`/families/${familyId}/biographies`)">
+                进入传记
+              </el-button>
+            </div>
+          </template>
+          <el-empty>
+            <template #description>
+              点击「进入传记」为家族名人创建独立传记页面
+            </template>
+          </el-empty>
+        </el-card>
+      </el-tab-pane>
+
       <!-- 族谱树 -->
       <el-tab-pane label="族谱树" name="tree">
         <el-card>

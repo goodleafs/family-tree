@@ -23,6 +23,10 @@ class User(Base):
     created_persons = relationship("Person", back_populates="creator")
     created_memorial_halls = relationship("MemorialHall", back_populates="creator")
     worship_records = relationship("WorshipRecord", back_populates="user")
+    created_albums = relationship("Album", back_populates="creator")
+    uploaded_photos = relationship("Photo", back_populates="uploader")
+    uploaded_documents = relationship("Document", back_populates="uploader")
+    created_biographies = relationship("PersonBiography", back_populates="creator")
     
     def __repr__(self):
         return f"<User {self.username}>"

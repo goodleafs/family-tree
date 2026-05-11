@@ -1,0 +1,30 @@
+{
+  "name": "family-tree-v2",
+  "version": "2.0.0",
+  "description": "寻根族谱管理系统 - 中式传统典雅风格",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "dependencies": {
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "pinia": "^2.1.7",
+    "axios": "^1.6.8",
+    "d3": "^7.9.0",
+    "@vueuse/core": "^10.9.0",
+    "lunar-javascript": "^1.6.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "~5.3.3",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.6",
+    "@types/d3": "^7.4.3",
+    "@types/node": "^20.11.30"
+  }
+}

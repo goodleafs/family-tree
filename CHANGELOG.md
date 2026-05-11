@@ -7,6 +7,44 @@
 
 ## [未发布]
 
+### 新增
+
+- **家族相册功能**
+  - 新增 `Album` 和 `Photo` 数据库模型，支持相册集管理和照片上传
+  - 相册列表视图 + 时间轴视图（按年份分组展示）
+  - 支持照片标题、拍摄日期、缩略图生成
+  - API: `/api/v1/albums/*` 共 10 个端点
+  - 前端：`frontend/src/views/album/` + `frontend-v2/src/views/album/`
+
+- **文献库功能**
+  - 新增 `Document` 数据库模型，支持 PDF/图片/Word 等文献上传
+  - 文献分类（老谱扫描、契约文书、著作文献、其他）
+  - 分类统计概览、关键词搜索、内联预览（图片/PDF）
+  - API: `/api/v1/documents/*` 共 7 个端点
+  - 前端：`frontend/src/views/document/` + `frontend-v2/src/views/document/`
+
+- **人物传记功能**
+  - 新增 `PersonBiography` 数据库模型，支持 HTML 富文本传记
+  - 传记列表 + 详情页 + 编辑模式，支持浏览量统计
+  - API: `/api/v1/biographies/*` 共 7 个端点
+  - 前端：`frontend/src/views/biography/` + `frontend-v2/src/views/biography/`
+
+- **新版前端 (frontend-v2)**
+  - 全新中式传统典雅风格 UI
+  - 自定义组件库（GCard、GButton、GInput），替代 Element Plus
+  - 内联 SVG 图标体系，CSS 变量驱动主题
+  - 逐步取代旧版前端成为主前端
+
+### 修改
+
+- **后端配置扩展**
+  - `config.py`：新增 `ALLOWED_DOCUMENT_TYPES`、`MAX_DOCUMENT_SIZE`、上传子目录配置
+  - `file_upload.py`：新增 `validate_document()`，支持文档类型验证
+- **后端模型扩展**
+  - `user.py`：新增 created_albums、uploaded_photos、uploaded_documents、created_biographies 关系
+  - `family.py`：新增 albums、photos、documents、biographies 关系
+  - `person.py`：新增 biography_entry 关系
+
 ## [1.0.0] - 2026-03-11
 
 ### 新增

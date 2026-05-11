@@ -23,6 +23,10 @@ class Family(Base):
     members = relationship("FamilyMember", back_populates="family")
     persons = relationship("Person", back_populates="family")
     memorial_halls = relationship("MemorialHall", back_populates="family")
+    albums = relationship("Album", back_populates="family", cascade="all, delete-orphan")
+    photos = relationship("Photo", back_populates="family", cascade="all, delete-orphan")
+    documents = relationship("Document", back_populates="family", cascade="all, delete-orphan")
+    biographies = relationship("PersonBiography", back_populates="family", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<Family {self.name}>"

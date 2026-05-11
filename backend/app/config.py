@@ -22,7 +22,19 @@ class Settings(BaseSettings):
     # 文件上传配置 - 使用绝对路径
     UPLOAD_DIR: str = os.path.join(BASE_DIR, "uploads")
     MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB
+    MAX_DOCUMENT_SIZE: int = 50 * 1024 * 1024  # 50MB for documents/PDFs
     ALLOWED_IMAGE_TYPES: list = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    ALLOWED_DOCUMENT_TYPES: list = [
+        "image/jpeg", "image/png", "image/gif", "image/webp",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain"
+    ]
+    # 上传子目录
+    ALBUM_DIR: str = "albums"
+    DOCUMENT_DIR: str = "documents"
+    BIOGRAPHY_DIR: str = "biographies"
     
     # 前端配置
     FRONTEND_URL: str = "http://localhost:5173"

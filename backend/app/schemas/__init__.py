@@ -6,6 +6,19 @@ from app.schemas.memorial import (
     MemorialHallListResponse, WorshipRequest, WorshipResponse, WorshipRecordResponse,
     OfferingItem, PersonBrief, CreatorBrief
 )
+from app.schemas.album import (
+    AlbumBase, AlbumCreate, AlbumUpdate, AlbumResponse, AlbumDetailResponse, AlbumListResponse,
+    PhotoBase, PhotoCreate, PhotoUpdate, PhotoResponse, PhotoListResponse,
+    TimelineGroup, AlbumTimelineResponse
+)
+from app.schemas.document import (
+    DocumentBase, DocumentCreate, DocumentUpdate, DocumentResponse, DocumentListResponse,
+    DocumentCategoryCount, DocumentOverviewResponse
+)
+from app.schemas.biography import (
+    BiographyBase, BiographyCreate, BiographyUpdate, BiographyResponse, BiographyListItem,
+    BiographyDetailResponse, BiographyListResponse, PersonBriefForBiography
+)
 
 __all__ = [
     # User schemas
@@ -21,5 +34,15 @@ __all__ = [
     # Memorial schemas
     "MemorialHallCreate", "MemorialHallUpdate", "MemorialHallResponse", "MemorialHallListItem",
     "MemorialHallListResponse", "WorshipRequest", "WorshipResponse", "WorshipRecordResponse",
-    "OfferingItem", "PersonBrief", "CreatorBrief"
+    "OfferingItem", "PersonBrief", "CreatorBrief",
+    # Album schemas
+    "AlbumBase", "AlbumCreate", "AlbumUpdate", "AlbumResponse", "AlbumDetailResponse", "AlbumListResponse",
+    "PhotoBase", "PhotoCreate", "PhotoUpdate", "PhotoResponse", "PhotoListResponse",
+    "TimelineGroup", "AlbumTimelineResponse",
+    # Document schemas
+    "DocumentBase", "DocumentCreate", "DocumentUpdate", "DocumentResponse", "DocumentListResponse",
+    "DocumentCategoryCount", "DocumentOverviewResponse",
+    # Biography schemas
+    "BiographyBase", "BiographyCreate", "BiographyUpdate", "BiographyResponse", "BiographyListItem",
+    "BiographyDetailResponse", "BiographyListResponse", "PersonBriefForBiography"
 ]

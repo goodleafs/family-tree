@@ -28,10 +28,27 @@ def validate_image(file: UploadFile) -> None:
             detail=f"不支持的文件类型。允许的类型: {', '.join(settings.ALLOWED_IMAGE_TYPES)}"
         )
 
-def save_upload_file(file: UploadFile, subfolder: str = "photos") -> str:
-    """保存上传的文件"""
+def validate_document(file: UploadFile) -> None:
+    """验证上传的文档文件（图片+PDF）"""
+    if file.content_type not in settings.ALLOWED_DOCUMENT_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"不支持的文件类型。允许的类型: {', '.join(settings.ALLOWED_DOCUMENT_TYPES)}"
+        )
+
+def save_upload_file(file: UploadFile, subfolder: str = "photos", validate_type: str = "image") -> str:
+    """保存上传的文件
+    
+    Args:
+        file: 上传的文件
+        subfolder: 子目录名称
+        validate_type: 验证类型 - "image" 仅图片, "document" 图片+PDF
+    """
     try:
-        validate_image(file)
+        if validate_type == "document":
+            validate_document(file)
+        else:
+            validate_image(file)
         
         # 创建子目录
         sub_path = UPLOAD_PATH / subfolder
@@ -46,12 +63,13 @@ def save_upload_file(file: UploadFile, subfolder: str = "photos") -> str:
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
-        # 生成缩略图
-        try:
-            create_thumbnail(file_path, sub_path / f"thumb_{unique_filename}")
-        except Exception as e:
-            print(f"缩略图生成失败: {e}")
-            pass  # 缩略图生成失败不影响主文件
+        # 如果是图片类型，生成缩略图
+        if file.content_type and file.content_type.startswith("image/"):
+            try:
+                create_thumbnail(file_path, sub_path / f"thumb_{unique_filename}")
+            except Exception as e:
+                print(f"缩略图生成失败: {e}")
+                pass  # 缩略图生成失败不影响主文件
         
         # 返回相对路径
         return f"/uploads/{subfolder}/{unique_filename}"

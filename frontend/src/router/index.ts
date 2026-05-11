@@ -88,6 +88,36 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/families/:id/albums',
+      name: 'FamilyAlbums',
+      component: () => import('@/views/album/index.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/families/:id/albums/:albumId',
+      name: 'AlbumDetail',
+      component: () => import('@/views/album/detail.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/families/:id/documents',
+      name: 'FamilyDocuments',
+      component: () => import('@/views/document/index.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/families/:id/biographies',
+      name: 'FamilyBiographies',
+      component: () => import('@/views/biography/index.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/families/:id/biographies/:bioId',
+      name: 'BiographyDetail',
+      component: () => import('@/views/biography/detail.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/admin',
       name: 'Admin',
       component: () => import('@/views/admin/index.vue'),

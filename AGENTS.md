@@ -5,13 +5,15 @@ Full-stack family tree/genealogy management system with FastAPI backend and Vue 
 
 **Tech Stack:**
 - **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0 (async), SQLite, Pydantic
-- **Frontend:** Vue 3, TypeScript 5.3, Vite, Pinia, Element Plus, D3.js
+- **Frontend (v1):** Vue 3, TypeScript 5.3, Vite, Pinia, Element Plus, D3.js
+- **Frontend (v2 - 主推):** Vue 3, TypeScript 5.3, Vite, Pinia, D3.js, 自定义组件库（中式典雅风格）
+- **前端版本说明**: `frontend/` 为旧版（Element Plus），`frontend-v2/` 为新版（主推，后续以 v2 为主）
 
 ---
 
 ## Build/Lint/Development Commands
 
-### Frontend (./frontend/)
+### Frontend (./frontend/ - 旧版 Element Plus)
 ```bash
 # Development server
 npm run dev
@@ -27,6 +29,21 @@ npm run lint
 
 # Format (Prettier - config uses defaults)
 npm run format
+
+# Preview production build
+npm run preview
+```
+
+### Frontend (./frontend-v2/ - 新版主推)
+```bash
+# Development server (port 5173)
+npm run dev
+
+# Production build
+npm run build
+
+# TypeScript type checking
+npm run typecheck
 
 # Preview production build
 npm run preview
@@ -231,9 +248,20 @@ class Person(Base):
 1. Define Pydantic schemas in `app/schemas/`
 2. Add service method in `app/services/`
 3. Create router endpoint in `app/routers/`
-4. Export in `app/routers/__init__.py`
-5. Add frontend API in `@/api/`
-6. Add TypeScript types in `@/types/index.ts`
+4. Export in `app/routers/__init__.py` and register in `app/main.py`
+5. Add frontend API in `@/api/`（如 `frontend/src/api/` 和 `frontend-v2/src/api/`）
+6. Add TypeScript types in `@/types/index.ts`（两个前端目录都需要更新）
+
+### Adding a New Backend Model (遵循已有模式)
+1. 在 `app/models/` 中创建新模型文件（参考 `album.py` 或 `document.py` 的写法）
+2. 在 `app/models/__init__.py` 中导出
+3. 如有需要在 `app/models/user.py`、`app/models/family.py` 等关联模型中添加 relationship
+
+### Adding a New Frontend View (frontend-v2)
+1. 在 `frontend-v2/src/views/` 下创建视图目录和文件
+2. 使用自定义组件（GCard、GButton、GInput）而非 Element Plus
+3. 使用 CSS 变量（`--cinnabar`、`--bg-primary` 等）保持一致风格
+4. 在 `frontend-v2/src/router/index.ts` 中添加路由（带 `meta.title`）
 
 ### Database Migrations
 Currently using SQLite auto-create. For production, add Alembic:
@@ -258,11 +286,21 @@ backend/
 │   └── database.py  # Async DB session setup
 └── uploads/         # File uploads (ignored in git)
 
-frontend/
+frontend/ (旧版 - Element Plus)
 ├── src/
 │   ├── api/         # API layer (axios wrappers)
 │   ├── views/       # Page components
 │   ├── components/  # Reusable UI components
+│   ├── stores/      # Pinia state management
+│   ├── types/       # TypeScript interfaces
+│   └── router/      # Vue Router configuration
+└── public/          # Static assets
+
+frontend-v2/ (新版 - 主推)
+├── src/
+│   ├── api/         # API layer (axios wrappers)
+│   ├── views/       # Page components
+│   ├── components/  # Reusable UI components (common/layout)
 │   ├── stores/      # Pinia state management
 │   ├── types/       # TypeScript interfaces
 │   └── router/      # Vue Router configuration

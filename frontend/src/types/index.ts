@@ -136,6 +136,122 @@ export interface FamilyTree {
   total_members: number
 }
 
+// 相册相关
+export interface Album {
+  id: number
+  family_id: number
+  name: string
+  description?: string
+  cover_url?: string
+  sort_order: number
+  created_by: number
+  created_at: string
+  updated_at: string
+  photo_count?: number
+}
+
+export interface AlbumDetail extends Album {
+  photos: Photo[]
+}
+
+export interface Photo {
+  id: number
+  album_id?: number
+  family_id: number
+  title?: string
+  description?: string
+  url: string
+  thumbnail_url?: string
+  taken_date?: string
+  taken_year?: number
+  taken_month?: number
+  file_size?: number
+  uploader_id: number
+  created_at: string
+}
+
+export interface TimelineGroup {
+  year: number
+  photos: Photo[]
+}
+
+export interface AlbumTimeline {
+  total: number
+  years: number[]
+  timeline: TimelineGroup[]
+}
+
+// 文献相关
+export interface Document {
+  id: number
+  family_id: number
+  title: string
+  description?: string
+  file_type: string
+  file_url: string
+  file_size?: number
+  file_ext?: string
+  author?: string
+  document_date?: string
+  tags?: string
+  category?: string
+  uploader_id: number
+  created_at: string
+  updated_at: string
+}
+
+export interface DocumentCategoryCount {
+  category: string
+  count: number
+}
+
+export interface DocumentOverview {
+  total: number
+  pdf_count: number
+  image_count: number
+  categories: DocumentCategoryCount[]
+}
+
+// 传记相关
+export interface PersonBrief {
+  id: number
+  name: string
+  gender?: string
+  birth_date?: string
+  death_date?: string
+  photo_url?: string
+  branch_name?: string
+  generation_number?: number
+}
+
+export interface Biography {
+  id: number
+  title?: string
+  subtitle?: string
+  summary?: string
+  content: string
+  achievements?: string
+  portrait_url?: string
+  is_published: boolean
+  views_count: number
+  person: PersonBrief
+  created_by: number
+  created_at: string
+  updated_at: string
+}
+
+export interface BiographyListItem {
+  id: number
+  title?: string
+  person: PersonBrief
+  summary?: string
+  views_count: number
+  is_published: boolean
+  created_by: number
+  created_at: string
+  updated_at: string
+}
+
 // API 响应
 export interface ApiResponse<T> {
   data: T

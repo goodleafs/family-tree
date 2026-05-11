@@ -1,0 +1,232 @@
+/**
+ * 传统纹样 - CSS背景图案
+ * 
+ * 包含：云纹、回纹、祥云、水墨晕染等
+ */
+
+/* ===== 云纹边框 ===== */
+.pattern-cloud-border {
+  position: relative;
+}
+
+.pattern-cloud-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='20' viewBox='0 0 60 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q15 0 30 20 Q45 0 60 20' fill='none' stroke='%23b5b5b5' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  opacity: 0.3;
+}
+
+/* ===== 回纹装饰 ===== */
+.pattern-meander {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 L10 10 L10 0 M10 10 L20 10 L20 20 L10 20 L10 30 L30 30 L30 10 L40 10' fill='none' stroke='%23b5b5b5' stroke-width='1' opacity='0.2'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ===== 祥云纹 ===== */
+.pattern-auspicious-cloud {
+  position: relative;
+}
+
+.pattern-auspicious-cloud::after {
+  content: '☁';
+  position: absolute;
+  font-size: 100px;
+  color: var(--ink-pale);
+  opacity: 0.1;
+  right: -20px;
+  bottom: -30px;
+  pointer-events: none;
+}
+
+/* ===== 水墨晕染背景 ===== */
+.bg-ink-wash {
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(196, 30, 58, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(44, 74, 110, 0.03) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+/* ===== 宣纸纹理背景 ===== */
+.bg-paper-texture {
+  background-color: var(--paper-cream);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* ===== 印章装饰 ===== */
+.seal {
+  position: relative;
+  display: inline-block;
+}
+
+.seal::after {
+  content: attr(data-seal);
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--cinnabar);
+  color: var(--paper-white);
+  font-family: var(--font-decorative);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transform: rotate(5deg);
+  opacity: 0.9;
+}
+
+/* ===== 分隔线装饰 ===== */
+.divider-ornate {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.divider-ornate::before,
+.divider-ornate::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.divider-ornate::before {
+  margin-right: var(--space-4);
+}
+
+.divider-ornate::after {
+  margin-left: var(--space-4);
+}
+
+/* ===== 传统边框 ===== */
+.border-chinese {
+  border: 1px solid var(--border-primary);
+  position: relative;
+}
+
+.border-chinese::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid var(--border-primary);
+  pointer-events: none;
+}
+
+/* ===== 卷轴装饰 ===== */
+.scroll-decoration {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--paper-aged) 0%,
+    var(--paper-cream) 10%,
+    var(--paper-cream) 90%,
+    var(--paper-aged) 100%
+  );
+  border-left: 8px solid var(--ink-dark);
+  border-right: 8px solid var(--ink-dark);
+  padding: var(--space-8) var(--space-12);
+}
+
+.scroll-decoration::before,
+.scroll-decoration::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  height: 20px;
+  background: var(--ink-dark);
+}
+
+.scroll-decoration::before {
+  top: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.scroll-decoration::after {
+  bottom: 0;
+  border-radius: 0 0 10px 10px;
+}
+
+/* ===== 竹简样式 ===== */
+.bamboo-slip {
+  background: linear-gradient(
+    180deg,
+    #d4b896 0%,
+    #c9a86c 50%,
+    #d4b896 100%
+  );
+  border-radius: var(--radius-sm);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    var(--shadow-md);
+  padding: var(--space-6);
+  position: relative;
+}
+
+.bamboo-slip::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 30px,
+    rgba(0, 0, 0, 0.05) 30px,
+    rgba(0, 0, 0, 0.05) 31px
+  );
+  pointer-events: none;
+}
+
+/* ===== 灯笼装饰 ===== */
+.lantern {
+  width: 40px;
+  height: 60px;
+  background: linear-gradient(
+    180deg,
+    var(--cinnabar) 0%,
+    var(--cinnabar-light) 50%,
+    var(--cinnabar) 100%
+  );
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.3);
+}
+
+.lantern::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 2px 2px 0 0;
+}
+
+.lantern::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 15px;
+  background: var(--cinnabar);
+  border-radius: 0 0 2px 2px;
+}

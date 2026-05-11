@@ -1,0 +1,196 @@
+/**
+ * 中式传统典雅风格 - 设计变量系统
+ * 
+ * 设计理念：
+ * - 水墨画意境：黑白灰为主，点缀朱砂红、靛青蓝
+ * - 宣纸质感的温暖米色背景
+ * - 传统纹样装饰（云纹、回纹、祥云等）
+ * - 书法字体与现代排版的融合
+ */
+
+:root {
+  /* ===== 核心色彩 ===== */
+  
+  /* 水墨五色 - 主色调 */
+  --ink-black: #1a1a1a;           /* 墨色 */
+  --ink-dark: #2d2d2d;            /* 浓墨 */
+  --ink-medium: #4a4a4a;          /* 中墨 */
+  --ink-light: #7a7a7a;           /* 淡墨 */
+  --ink-pale: #b5b5b5;            /* 极淡墨 */
+  
+  /* 宣纸色系 - 背景色 */
+  --paper-white: #faf8f5;         /* 宣纸白 */
+  --paper-cream: #f5f0e8;         /* 米色宣纸 */
+  --paper-aged: #ebe5d9;          /* 陈旧宣纸 */
+  --paper-dark: #ddd5c5;          /* 深色宣纸 */
+  
+  /* 朱砂红 - 强调色 */
+  --cinnabar: #c41e3a;            /* 朱砂红 */
+  --cinnabar-light: #d64a62;      /* 浅朱砂 */
+  --cinnabar-dark: #9a1830;       /* 深朱砂 */
+  --cinnabar-pale: #f5d5db;       /* 朱砂晕染 */
+  
+  /* 靛青蓝 - 辅助色 */
+  --indigo: #2c4a6e;              /* 靛青 */
+  --indigo-light: #4a6d8e;        /* 浅靛青 */
+  --indigo-dark: #1e3550;         /* 深靛青 */
+  --indigo-pale: #d8e2ec;         /* 靛青晕染 */
+  
+  /* 竹绿 - 点缀色 */
+  --bamboo: #5a7247;              /* 竹绿 */
+  --bamboo-light: #7d9668;        /* 浅竹绿 */
+  --bamboo-pale: #e8ede4;         /* 竹绿晕染 */
+  
+  /* 金色 - 装饰色 */
+  --gold: #b8860b;                /* 古铜金 */
+  --gold-light: #d4a843;          /* 浅金 */
+  --gold-pale: #f5e6c8;           /* 金色晕染 */
+  
+  /* 语义化颜色 */
+  --color-primary: var(--cinnabar);
+  --color-primary-light: var(--cinnabar-light);
+  --color-primary-dark: var(--cinnabar-dark);
+  --color-primary-pale: var(--cinnabar-pale);
+  
+  --color-secondary: var(--indigo);
+  --color-secondary-light: var(--indigo-light);
+  --color-secondary-pale: var(--indigo-pale);
+  
+  --color-success: var(--bamboo);
+  --color-success-pale: var(--bamboo-pale);
+  
+  --color-warning: var(--gold);
+  --color-warning-pale: var(--gold-pale);
+  
+  --color-error: var(--cinnabar);
+  --color-error-pale: var(--cinnabar-pale);
+  
+  --color-info: var(--indigo-light);
+  --color-info-pale: var(--indigo-pale);
+  
+  /* ===== 文字颜色 ===== */
+  --text-primary: var(--ink-black);
+  --text-secondary: var(--ink-medium);
+  --text-tertiary: var(--ink-light);
+  --text-disabled: var(--ink-pale);
+  --text-inverse: var(--paper-white);
+  
+  /* ===== 背景颜色 ===== */
+  --bg-primary: var(--paper-white);
+  --bg-secondary: var(--paper-cream);
+  --bg-tertiary: var(--paper-aged);
+  --bg-dark: var(--ink-dark);
+  
+  /* ===== 边框颜色 ===== */
+  --border-primary: var(--paper-aged);
+  --border-secondary: var(--paper-dark);
+  --border-light: var(--paper-cream);
+  --border-dark: var(--ink-medium);
+  
+  /* ===== 字体系统 ===== */
+  
+  /* 标题字体 - 具有书法韵味 */
+  --font-title: "Noto Serif SC", "Source Han Serif SC", "思源宋体", "STSong", "SimSun", serif;
+  
+  /* 正文字体 - 清晰易读 */
+  --font-body: "Noto Sans SC", "Source Han Sans SC", "思源黑体", "Microsoft YaHei", "微软雅黑", sans-serif;
+  
+  /* 装饰字体 - 印章、题跋 */
+  --font-decorative: "ZCOOL XiaoWei", "站酷小薇体", "KaiTi", "楷体", serif;
+  
+  /* 字号 */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+  
+  /* 行高 */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  --leading-loose: 2;
+  
+  /* 字重 */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* ===== 间距系统 ===== */
+  --space-1: 0.25rem;      /* 4px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-8: 2rem;         /* 32px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-12: 3rem;        /* 48px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+  
+  /* ===== 圆角 ===== */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  
+  /* 中式特殊圆角 - 模拟传统器物 */
+  --radius-chinese: 4px 4px 20px 20px;  /* 如花瓶底部 */
+  
+  /* ===== 阴影 ===== */
+  --shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.05);
+  --shadow-md: 0 4px 6px rgba(26, 26, 26, 0.07);
+  --shadow-lg: 0 10px 15px rgba(26, 26, 26, 0.1);
+  --shadow-xl: 0 20px 25px rgba(26, 26, 26, 0.12);
+  
+  /* 水墨晕染效果 */
+  --shadow-ink: 0 0 20px rgba(26, 26, 26, 0.08);
+  --shadow-ink-strong: 0 0 40px rgba(26, 26, 26, 0.15);
+  
+  /* ===== 过渡动画 ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+  
+  /* 毛笔书写效果 */
+  --transition-brush: 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  
+  /* ===== 布局 ===== */
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 64px;
+  --content-max-width: 1400px;
+  
+  /* ===== Z-Index ===== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+}
+
+/* ===== 深色主题变量 ===== */
+.dark {
+  --bg-primary: var(--ink-dark);
+  --bg-secondary: var(--ink-medium);
+  --bg-tertiary: var(--ink-black);
+  --text-primary: var(--paper-white);
+  --text-secondary: var(--paper-aged);
+  --text-tertiary: var(--paper-dark);
+  --border-primary: var(--ink-medium);
+  --border-secondary: var(--ink-light);
+}

@@ -20,6 +20,7 @@
 - 照片上传与管理（自动缩略图生成）
 - 家族关系建立（父子、配偶、子女关系）
 - 多配偶关系支持
+- **人物传记**: 为家族名人创建独立传记页面，支持富文本编辑和浏览量统计
 
 ### 🌳 族谱可视化
 - 基于 D3.js 的交互式族谱树展示
@@ -34,8 +35,19 @@
 - 祭拜数据统计与展示
 - 祭拜权限管理（家族成员专属）
 
+### 📸 家族相册
+- 相册集管理：创建多个相册分类管理家族照片
+- 照片上传：支持标题、拍摄日期，自动生成缩略图
+- 时间轴视图：按年份分组展示，直观回顾家族历史
+
+### 📜 文献库
+- 文献上传：支持 PDF、图片、Word 等格式
+- 分类管理：老谱扫描、契约文书、著作文献等分类
+- 在线预览：图片和 PDF 内联预览
+- 搜索筛选：按分类、关键词快速定位文献
+
 ### 📄 导入导出
-- **PDF 导出**: 使用 ReportLab 生成精美族谱 PDF
+- **PDF 导出**: 使用 ReportLab 生成精美族谱 PDF，支持成员信息导出
 - **Excel 导入**: 批量导入成员信息
 - **打印预览**: 优化打印样式，支持 A4 纸张
 
@@ -85,11 +97,11 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 后端 API 文档：http://localhost:8000/docs
 
-#### 3. 前端安装
+#### 3. 前端安装（新版推荐）
 
 ```bash
-# 进入前端目录
-cd frontend
+# 进入新版前端目录
+cd frontend-v2
 
 # 安装依赖
 npm install
@@ -98,14 +110,30 @@ npm install
 npm run dev
 ```
 
-前端应用：http://localhost:5173
+新版前端应用：http://localhost:5173（中式传统典雅风格）
+
+#### 4. 旧版前端（可选）
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+旧版前端应用：http://localhost:5174（基于 Element Plus）
+
+默认用户名：yunxing 密码：yunxing2023
 
 ### 生产部署
 
 ```bash
-# 前端构建
-cd frontend
+# 前端构建（新版）
+cd frontend-v2
 npm run build
+
+# 或旧版前端构建
+# cd frontend
+# npm run build
 
 # 后端生产环境（需要配置 .env 文件）
 cd backend
@@ -166,6 +194,27 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 - 每位成员的祭拜记录会永久保存
 - 支持多次祭拜，累计祭拜次数
 
+### 管理家族相册
+
+1. 进入家族详情页，点击"家族相册"标签
+2. 创建相册（如"2024年聚会"、"老照片"）
+3. 进入相册后点击"上传照片"，可添加标题和拍摄日期
+4. 切换到"时间轴"视图，按年份浏览家族照片
+
+### 管理文献库
+
+1. 进入家族详情页，点击"文献库"标签
+2. 点击"上传文献"，选择文件并填写标题、分类、作者等信息
+3. 支持 PDF 内联预览和图片预览
+4. 可按分类筛选、按关键词搜索文献
+
+### 创建人物传记
+
+1. 进入家族详情页，点击"人物传记"标签
+2. 点击"创建传记"，选择要创建传记的家族成员
+3. 填写传记正文（支持 HTML 格式）、摘要和主要成就
+4. 发布后可在传记详情页查看，系统自动统计浏览次数
+
 ## ⚙️ 配置说明
 
 ### 后端配置 (backend/app/config.py)
@@ -180,8 +229,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7天
 
 # 文件上传配置
 UPLOAD_DIR = "uploads"
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB（图片）
+MAX_DOCUMENT_SIZE = 50 * 1024 * 1024  # 50MB（文献）
 ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+ALLOWED_DOCUMENT_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp",
+                          "application/pdf", "application/msword",
+                          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "text/plain"]
+# 上传子目录
+ALBUM_DIR = "albums"        # 相册照片
+DOCUMENT_DIR = "documents"  # 文献文件
+BIOGRAPHY_DIR = "biographies"  # 传记肖像
 
 # CORS 配置
 ALLOWED_ORIGINS = ["http://localhost:5173", "http://localhost:3000"]
@@ -217,20 +275,6 @@ export default defineConfig({
 ## 🤝 贡献指南
 
 我们欢迎所有形式的贡献，无论是新功能、bug 修复还是文档改进。
-
-## 系统截图
-
-![](/mdimage/ScreenShot_2026-03-10_172515_436.png)
-
-![ScreenShot_2026-03-10_172543_603](/mdimage/ScreenShot_2026-03-10_172543_603.png)
-
-![ScreenShot_2026-03-10_172553_603](/mdimage/ScreenShot_2026-03-10_172553_603.png)
-
-![ScreenShot_2026-03-10_172603_428](/mdimage/ScreenShot_2026-03-10_172603_428.png)
-
-![ScreenShot_2026-03-10_172614_627](/mdimage/ScreenShot_2026-03-10_172614_627.png)
-
-![ScreenShot_2026-03-10_172622_315](/mdimage/ScreenShot_2026-03-10_172622_315.png)
 
 ### 开发流程
 

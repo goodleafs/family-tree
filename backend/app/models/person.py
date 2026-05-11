@@ -29,6 +29,7 @@ class Person(Base):
     family = relationship("Family", back_populates="persons")
     creator = relationship("User", back_populates="created_persons")
     memorial_hall = relationship("MemorialHall", back_populates="person", uselist=False)
+    biography_entry = relationship("PersonBiography", back_populates="person", uselist=False)
     relationships_as_person = relationship(
         "Relationship", 
         foreign_keys="Relationship.person_id",
